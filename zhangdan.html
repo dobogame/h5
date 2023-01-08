@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+	<title>bootstrap</title>
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="jquery.min.js"></script>
+	<!-- 新 Bootstrap5 核心 CSS 文件 -->
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<!-- 引入图标库icon -->
+	<link rel="stylesheet" href="icon/bootstrap-icons.css">
+	<!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+	<script src="bootstrap.bundle.min.js"></script>
+	<!-- css解决a链接按钮式显示蓝框 -->
+	<link rel="stylesheet" href="my.css">
+</head>
+<body>
+	<!-- 自适应导航 -->
+	<main id="app">
+		<!-- 导航 -->
+		<div class="container bg-secondary p-0 sticky-top">
+			<div class="d-flex justify-content-between">
+				<a href="home.html" class="link-light p-3 text-decoration-none">幸运五星彩</a>
+				<a href="kuaida.html" class="link-light px-2 py-3 text-decoration-none">快打</a>
+				<a href="kuaixuan.html" class="link-light px-2 py-3 text-decoration-none">快选</a>
+				<a href="mingxi.html" class="link-light px-2 py-3 text-decoration-none">明细</a>
+				<a href="zhangdan.html" class="link-light shadow px-2 py-3 text-decoration-none">账单</a>
+				<a href="#admin" class="link-light p-3 shadow-sm text-decoration-none" data-bs-toggle="offcanvas" aria-controls="admin"><i class="bi bi-person-circle" style="font-size: 1rem;"></i></a>
+			</div>
+		</div>
+		<!-- 个人中心侧边栏 -->
+		<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="admin" aria-labelledby="adminLabel" data-bs-scroll="false" data-bs-backdrop="true">
+		  <div class="offcanvas-header bg-secondary">
+		  	<div id="offcanvasTopLabel">
+		  		<p class="text-light">账户:{{account}}</p>
+		  		<div><small class="text-dark">可用余额:{{(usable / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-dark">账户额度:{{(credit / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-warning">账户余额:{{((usable - credit) / 100).toFixed(2)}}</small></div>	
+		  	</div>
+		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		  </div>
+		  <div class="offcanvas-body">
+		  	<a href="kaijiang.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>开奖号码</span>
+		  	</a>
+		  	<a href="guize.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-clipboard-data-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>规则说明</span>
+		  	</a>	  	
+		  	<a href="peilv.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-back me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>赔率转换</span>
+		  	</a>
+		  	<a href="zhuce.html" class="d-flex align-items-center text-dark text-decoration-none mb-3">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>修改密码</span>
+		  	</a>
+		  	<div class="d-grid">
+		  	    <button type="button" class="btn btn-secondary btn-block">登出</button>
+		  	</div>
+		  </div>
+		</div>
+		<!-- 开奖面板 -->
+		<div class="container px-3 pt-3">
+			<div class="card text-center shadow-sm">
+				<div class="card-header py-2">
+					<h6 class="card-title m-0 text-secondary">{{issue.last}}期<small class="text-muted"> {{date}}</small>
+					</h6>
+				</div>
+				<div class="card-body py-2">
+					<div v-if="issue.lastResult">
+						<i :class="'bi bi-'+issue.lastResult[0]+'-circle-fill text-secondary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[1]+'-circle-fill text-danger'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[2]+'-circle-fill text-primary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[3]+'-circle-fill text-success'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[4]+'-circle-fill text-warning'" style="font-size:1.6rem;"></i>
+					</div>
+					<div v-else>
+						<div class="spinner-border spinner-border-sm text-primary" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-secondary" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-success" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-danger" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-warning" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<p class="card-text text-danger">
+						<small>第{{issue.current}}期封盘还有:<mark id="bttime">{{minute}}分{{second < 10 ? '0' + second : second}}秒</mark>
+						</small>
+					</p>
+				</div>
+			</div>
+		</div>
+		<!-- ......账单........ -->
+		<div class="container px-3 my-3" v-if="bills.length > 0">
+			<a @click="requestOrdersDetail(b.oid)" :data-oid="b.oid" v-for="b in bills" data-bs-toggle="offcanvas" href="#zdcan" role="button" aria-controls="offcanvasExample"  class="link-dark text-decoration-none w-100 d-block mb-3 shadow-sm px-3 py-2 rounded">
+				<div class="d-flex w-100 justify-content-between align-items-center">
+					<div class="me-2">
+						<img src="5x.png" style="width:2rem;height: 2rem;">
+					</div>
+					<div class="flex-grow-1">
+						<div class="d-flex justify-content-between mb-2 align-items-center">
+							<span>幸运五星</span>
+							<span class="text-secondary"><small>{{b.issue}}期</small></span>
+						</div>
+						<div class="d-flex justify-content-between align-items-center">
+			              <span class="fw-bold"><small>投注{{b.total}}元</small></span>
+			              <span v-if="b.status === 0" class="text-success"><i class="bi bi-clock-fill"></i><small class="ms-2">待开奖</small></span>
+			              <span v-else-if="b.status === 1" class="text-secondary"><i class="bi bi-x-circle-fill"></i><small class="ms-2">未中奖</small></span>
+			              <span v-else-if="b.status === 2 || b.status === 3" class="text-danger"><i class="bi bi-trophy-fill"></i><small class="ms-2">中奖{{b.win}}元</small></span>
+			              <span v-else-if="b.status === 4" class="text-secondary"><i class="bi bi-rewind-circle-fill"></i><small class="ms-2">已退单</small></span>
+			            </div>
+					</div>
+				</div>
+			</a>
+			<p v-if="!end" class="m-0 text-center"><button @click="requestMore" class="btn btn-outline-danger">加载更多</button></p>
+			<p v-else class="m-0 text-center">到底了!</p>
+		</div>
+		<div v-else class="text-center mt-3">暂无数据!</div>
+		<!-- ............已中奖结果............... -->
+		<div class="offcanvas offcanvas-top h-100 " data-bs-scroll="false" data-bs-backdrop="true" tabindex="-1" id="zdcan" aria-labelledby="offcanvasExampleLabel">
+		  <div class="offcanvas-body p-0 m-0">
+		  	<div class="text-center text-bg-danger p-3 sticky-top shadow-sm">
+		  		<h5 class="mb-3 position-relative">投注详情<button type="button" class="btn-close text-reset position-absolute top-0 end-0" data-bs-dismiss="offcanvas" aria-label="Close"></button></h5>
+	  		  	<img class="mb-3" src="5x.png" style="width:4rem;height:4rem;">
+	  		  	<h3 class="m-1">幸运5星</h3>
+	  			<p class="m-1" style="font-size: 0.75rem;">第{{orderDetail.issue}}期</p>
+	  			<h5>中奖金额{{orderDetail.win != null ? (orderDetail.win / 100).toFixed(2) : '-'}}元</h5>
+		  	</div>
+			<div class="container py-3 px-4">
+				<div class="d-flex align-items-center">
+					<div class="me-3 text-muted">开奖号码</div>
+					<div v-if="orderDetail.result">
+						<i :class="'bi bi-'+orderDetail.result[0]+'-circle-fill text-secondary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+orderDetail.result[1]+'-circle-fill text-danger'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+orderDetail.result[2]+'-circle-fill text-primary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+orderDetail.result[3]+'-circle-fill text-success'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+orderDetail.result[4]+'-circle-fill text-warning'" style="font-size:1.6rem;"></i>
+					</div>
+				</div>
+				<div class="d-flex align-items-center mb-2">
+					<div class="me-3 text-muted">订单编号</div>
+					<div class="me-3 text-secondary">{{orderDetail.id}}</div>
+				</div>
+				
+				<div class="d-flex align-items-center mb-2">
+					<div class="me-3 text-muted">投注金额</div>
+					<div class="text-secondary">{{(orderDetail.total / 100).toFixed(2)}}</div>
+				</div>
+				<div class="d-flex align-items-center mb-2">
+					<div class="me-3 text-muted">投注回水</div>
+					<div class="text-secondary">{{orderDetail.status == 4 ? '-' : ((orderDetail.total * orderDetail.cashback) / 100000).toFixed(2)}}</div>
+				</div>
+				<div class="d-flex align-items-center mb-2">
+					<div class="me-3 text-muted">玩法名称</div>
+					<div class="text-secondary">二字定</div>
+				</div>
+				<div class="d-flex align-items-center mb-2">
+					<div class="me-3 text-muted">投注时间</div>
+					<div class="text-secondary">{{orderDetail.time}}</div>
+				</div>
+				<div class="d-flex align-items-center">
+					<div class="me-3 text-muted">开奖状态</div>
+					<div class="text-secondary">{{status[orderDetail.status]}}</div>
+				</div>
+			    
+			</div>
+			<div class="container">
+			    <div class="row row-cols-4 text-center border-bottom border-top">
+			    	<div class="col border-end py-1"><small>号码</small></div>
+			    	<div class="col border-end py-1"><small>购买金额</small></div>
+			    	<div class="col border-end py-1"><small>赔率</small></div>
+					<div class="col py-1"><small>状态</small></div>
+			    </div>
+			    <div v-for="number in orderDetail.numbers" :class="'row row-cols-4 text-center border-bottom '+bg[number.status]+''">
+			    	<div class="col border-end py-1"><small>{{number.num}}</small></div>
+			    	<div class="col border-end py-1"><small>{{(number.amount / 100).toFixed(2)}}</small></div>
+			    	<div class="col border-end py-1"><small>{{(number.odds / 100).toFixed(2)}}</small></div>
+					<div class="col py-1"><small>{{number.status == 3 ? '中奖'+(number.win / 100).toFixed(2) : number.status == 1 ? '未中奖' : status[number.status]}}</small></div>
+			    </div>
+			</div>
+		  </div>
+		</div>
+		<!-- .................................... -->
+</main>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.min.js"></script>
+<script src="https://unpkg.com/vue-resource@1.5.3/dist/vue-resource.min.js"></script>
+<script src="https://www.layuicdn.com/layer/layer.js"></script>
+<script>
+	const vm = new Vue({
+		el : "#app",
+		data : {
+			url :'',
+			usable : 0,
+			count : 15,
+			offset : 0,
+			bills : [],
+			end:false,
+			account:'',
+			date:'',
+			status: '',
+			minute:'',
+			second:'',
+			issue : {
+				current:'',
+				last:'',
+				lastResult:'',
+			},
+			orderDetail : {},
+			status : ['等待开奖', '已开奖', '已开奖', '已开奖', '已退单'],
+			bg : ['text-bg-light', 'text-bg-light', 'text-bg-primary', 'text-bg-danger', 'text-bg-light text-decoration-line-through']
+		},
+		created : function() {
+			this.usable = parseInt(localStorage.getItem('___usable')) || 0		
+			this.credit = parseInt(localStorage.getItem('___credit')) || 0			
+			this.account = localStorage.getItem('___$account')
+			let token = localStorage.getItem('___access-token')
+			if (token) {
+				Vue.http.headers.common['access-token'] = token
+			} else {
+				layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+					location = 'login.html'
+				}})
+				return
+			}
+			this.url = localStorage.getItem('___request-url')
+			let _this = this
+			this.requestCategory()
+			this.requestBill()
+
+			setInterval(function() {
+				if (_this.issue.lastResult) return
+				if (new Date().getSeconds() < 15) return
+				if (!_this.issue.last) return
+				_this.$http.get(_this.url + '/lottery/five_star/result?issue='+_this.issue.last).then(e=>{
+					if(e.status === 200 && e.body.code === 0 && e.body.data) {
+						_this.issue.lastResult = e.body.data
+					}
+				})
+			}, 2000, 1000)
+		},
+		methods : {
+			onmessage : function(e) {
+				let data = JSON.parse(e.data);
+				var arr = data.value.split(',');
+				if (data.event === 'balance_renew') {
+					localStorage.setItem('___usable', arr[0])
+					localStorage.setItem('___credit', arr[2])
+					this.usable = arr[0]
+					this.credit = arr[2]
+				} else {
+					console.log(data)
+				}
+			},
+			requestCategory : function() {
+				let weeks = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+				let date = new Date()
+				let month = date.getMonth() + 1
+				let day = date.getDate()
+				this.date = (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day) + weeks[date.getDay()]
+				let _this = this
+				this.$http.get(this.url + '/lottery/five_star/category').then(e => {
+					if (e.status !== 200) {
+						layer.msg(e.statusText)
+					} else {
+						if (e.body.code === 0) {
+							_this.issue.current = e.body.data.currentIssue + ''
+							_this.issue.last = e.body.data.lastIssue + ''
+							_this.issue.lastResult = e.body.data.lastResult
+							let endTime = e.body.data.endTime * 1000
+							let surplus = (endTime - e.body.systemTimestamp) / 1000
+							_this.minute = Math.floor(surplus / 60)
+							_this.second = Math.floor(surplus % 60)
+							let interval = setInterval(function() {
+								_this.second--
+								if (_this.second < 0) {
+									_this.second = 59
+									_this.minute--
+									if (_this.minute <0) {
+										clearInterval(interval)
+										layer.msg('请注意:'+_this.issue.current+'期已经封盘')
+										_this.requestCategory()
+									}
+								}
+							}, 1000)
+						} else if (e.body.code === 900 || e.body.code === 901) {
+							layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+								location = 'login.html'
+							}})
+						} else {
+							layer.msg(e.body.message)
+						}
+					}
+				})
+			},
+			requestMore : function() {
+				this.offset += this.count
+				this.requestBill()
+			},
+			requestBill : function() {
+				const _this = this
+				this.$http.get(this.url + '/lottery/five_star/bill?offset='+this.offset+'&count='+this.count).then(e => {
+					if (e.body.code !== 0) {
+						layer.msg(e.body.message)
+						return
+					} else if (e.body.code == 900 || e.body.code == 901) {
+						layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+							location = 'login.html'
+						}})
+						return
+					}
+					if (e.body.data.length == 0) {
+							_this.end = true
+							return
+						}
+					if (e.body.data.length < _this.count) {
+						_this.end = true
+					}
+					e.body.data.forEach(item => {
+						if (item.status === 4) {
+							item.cashback = '-'
+							item.win = '-'
+							item.profit = '-'
+						} else {
+							item.profit = ((item.win + ((item.total * item.cashback) / 1000) - item.total) / 100).toFixed(3)
+							item.cashback = ((item.total * item.cashback) / 100000).toFixed(3)
+							item.total = (item.total / 100).toFixed(2)
+							if (item.win != null) item.win = (item.win / 100).toFixed(2)
+						}
+						item.issue = (item.issue+'').substring(4)
+						_this.bills.push(item)
+					});
+				})
+			},
+			requestOrdersDetail : function(e) {
+				let layerIndex = layer.load();
+				const _this = this;
+				this.$http.get(this.url + '/lottery/five_star/order/detail?oid=' + e).then(e => {
+					layer.close(layerIndex)
+					if (e.body.code !== 0) {
+						layer.msg(e.body.message)
+						return
+					} else if (e.body.code == 900 || e.body.code == 901) {
+						layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+							location = 'login.html'
+						}})
+						return
+					}
+					_this.orderDetail = e.body.data
+				}, e => {
+					layer.close(layerIndex)
+					layer.msg(e.statusText)
+				})
+			}
+		
+		},
+		watch : {
+			items : function(e) {
+				console.log(e)
+			} 
+		}
+	})
+
+	document.getElementById('zdcan').addEventListener('hide.bs.offcanvas', () => {
+		vm.orderDetail = {}
+	})
+	let sseServer = localStorage.getItem('___sse')
+	let _source = new EventSource(sseServer + '@' + new Date().getTime());
+	_source.addEventListener('message', e => {vm.onmessage(e);})
+	_source.addEventListener('error', e => { _source.close();})
+	setInterval(() => {
+		_source.close();
+		_source = new EventSource(sseServer + '@' + new Date().getTime());
+		_source.addEventListener('message', e => {vm.onmessage(e);})
+		_source.addEventListener('error', e => { _source.close();})
+	}, 500000)
+</script>
+</html>

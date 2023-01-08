@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+		<title>bootstrap</title>
+		<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+		<script src="jquery.min.js"></script>
+		<!-- 新 Bootstrap5 核心 CSS 文件 -->
+		<link rel="stylesheet" href="bootstrap.min.css">
+		<!-- 引入图标库icon -->
+		<link rel="stylesheet" href="icon/bootstrap-icons.css">
+		<!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+		<script src="bootstrap.bundle.min.js"></script>
+		<!-- css解决a链接按钮式显示蓝框 -->
+		<link rel="stylesheet" href="my.css">
+		<!-- jquery -->
+	
+	</head>
+	<body>
+		<!-- 自适应导航 -->
+		<main id='app'>
+			<!-- 导航 -->
+			<div class="container bg-secondary p-0">
+				<div class="d-flex justify-content-between">
+					<a href="home.html" class="link-light p-3 text-decoration-none">幸运五星彩</a>
+					<a href="kuaida.html" class="link-light px-2 py-3 text-decoration-none">快打</a>
+					<a href="kuaixuan.html" class="link-light shadow px-2 py-3 text-decoration-none">快选</a>
+					<a href="mingxi.html" class="link-light px-2 py-3 text-decoration-none">明细</a>
+					<a href="zhangdan.html" class="link-light px-2 py-3 text-decoration-none">账单</a>
+					<a href="#admin" class="link-light p-3 shadow-sm text-decoration-none" data-bs-toggle="offcanvas" aria-controls="admin"><i class="bi bi-person-circle" style="font-size: 1rem;"></i></a>
+				</div>
+			</div>
+			<!-- 个人中心侧边栏 -->
+			<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="admin" aria-labelledby="adminLabel" data-bs-scroll="false" data-bs-backdrop="true">
+			  <div class="offcanvas-header bg-secondary">
+			  	<div id="offcanvasTopLabel">
+			  		<p class="text-light">账户:{{account}}</p>
+			  		<div><small class="text-dark">可用余额:{{(usable / 100).toFixed(2)}}</small></div>
+			  		<div><small class="text-dark">账户额度:{{(credit / 100).toFixed(2)}}</small></div>
+			  		<div><small class="text-warning">账户余额:{{((usable - credit) / 100).toFixed(2)}}</small></div>	
+			  	</div>
+			    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			  </div>
+			  <div class="offcanvas-body">
+			  	<a href="kaijiang.html" class="d-flex align-items-center text-dark text-decoration-none">
+			  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+			  		<span>开奖号码</span>
+			  	</a>
+			  	<a href="guize.html" class="d-flex align-items-center text-dark text-decoration-none">
+			  		<span><i class="bi bi-clipboard-data-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+			  		<span>规则说明</span>
+			  	</a>	  	
+			  	<a href="peilv.html" class="d-flex align-items-center text-dark text-decoration-none">
+			  		<span><i class="bi bi-back me-2 text-secondary" style="font-size:2rem;"></i></span>
+			  		<span>赔率转换</span>
+			  	</a>
+			  	<a href="zhuce.html" class="d-flex align-items-center text-dark text-decoration-none mb-3">
+			  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+			  		<span>修改密码</span>
+			  	</a>
+			  	<div class="d-grid">
+			  	    <button type="button" class="btn btn-secondary btn-block">登出</button>
+			  	</div>
+			  </div>
+			</div>
+			<!-- 开奖面板 -->
+			<div class="container px-0 sticky-top">
+				<div class="card border-0 shadow-sm">
+					<div class="card-header py-1 d-flex justify-content-between align-items-center">
+						<div v-if="issue.lastResult" class="w-75">
+							<p class="w-100 m-0"><small class="text-muted">第{{issue.last}}期</small></p>
+							<i :class="'bi bi-'+issue.lastResult[0]+'-circle-fill text-secondary'" style="font-size: 1.5rem;"></i>
+							<i :class="'bi bi-'+issue.lastResult[1]+'-circle-fill text-danger'" style="font-size: 1.5rem;"></i>
+							<i :class="'bi bi-'+issue.lastResult[2]+'-circle-fill text-primary'" style="font-size: 1.5rem;"></i>
+							<i :class="'bi bi-'+issue.lastResult[3]+'-circle-fill text-success'" style="font-size: 1.5rem;"></i>
+							<i :class="'bi bi-'+issue.lastResult[4]+'-circle-fill text-warning'" style="font-size:1.5rem;"></i>
+						</div>
+						<div v-else class="w-75">
+							<p class="w-100 m-0"><small class="text-muted">第{{issue.last}}期</small></p>
+							<div class="spinner-border spinner-border-sm text-primary" role="status">
+							  <span class="visually-hidden">开奖中...</span>
+							</div>
+							<div class="spinner-border spinner-border-sm text-secondary" role="status">
+							  <span class="visually-hidden">开奖中...</span>
+							</div>
+							<div class="spinner-border spinner-border-sm text-success" role="status">
+							  <span class="visually-hidden">开奖中...</span>
+							</div>
+							<div class="spinner-border spinner-border-sm text-danger" role="status">
+							  <span class="visually-hidden">开奖中...</span>
+							</div>
+							<div class="spinner-border spinner-border-sm text-warning" role="status">
+							  <span class="visually-hidden">开奖中...</span>
+							</div>
+						</div>
+						<div >
+							<p class="card-text text-danger mb-0">
+								<small>距离{{issue.current}}期封盘还有:<mark id="bttime">{{minute}}分{{second < 10 ? '0' + second : second}}秒</mark></small>
+							</p>
+						</div>
+					</div>
+					<div class="card-body">
+						<div id="list-tab" role="tablist" class="text-center">
+							<a class="list-group-item-action link-secondary active" id="list-home-list" data-way="TwoFixed" data-bs-toggle="list" href="#list-home"  role="tab" aria-selected="true">
+								<small>二字定</small>
+							</a>
+							<a class="list-group-item-action link-secondary" id="list-profile-list" data-way="ThreeFixed" data-bs-toggle="list" href="#list-profile" role="tab" aria-selected="false" tabindex="-1">
+								<small>三字定</small>
+							</a>
+							<a class="list-group-item-action link-secondary" id="list-messages-list" data-way="FourFixed" data-bs-toggle="list" href="#list-messages" role="tab" aria-selected="false" tabindex="-1">
+								<small>四字定</small>
+							</a>
+							<a class="list-group-item-action link-secondary" id="list-settings-list" data-way="TwoPresent" data-bs-toggle="list" href="#list-settings" role="tab" aria-selected="false" tabindex="-1">
+								<small>二字现</small>
+							</a>
+							
+							<a class="list-group-item-action link-secondary" id="list-sanxian-list" data-way="ThreePresent" data-bs-toggle="list" href="#list-sanxian" role="tab" aria-selected="false" tabindex="-1">
+								<small>三字现</small>
+							</a>
+							<a class="list-group-item-action link-secondary" id="list-sixian-list" data-way="FourPresent" data-bs-toggle="list" href="#list-sixian" role="tab" aria-selected="false" tabindex="-1">
+								<small>四字现</small>
+							</a>
+							<a class="list-group-item-action link-secondary" id="list-wuer-list" data-way="TwoOutOfFive" data-bs-toggle="list" href="#list-wuer" role="tab" aria-selected="false" tabindex="-1">
+								<small>五位二定</small>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 7中算法 -->
+			<div class="container px-3 my-3">
+				<!-- 7中算法内容 -->
+				<div class="tab-content" id="nav-tabContent" style="font-size:.875rem;">
+					<!-- 二字定................................. -->
+					<div v-show="way == 'TwoFixed'" class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+						<!-- 玩法提示 -->
+						<div class="modal" id="mymodal">
+						  <div class="modal-dialog modal-dialog-centered">
+						    <div class="modal-content">
+						      <!-- 模态框头部 -->
+						      <div class="modal-header">
+						        <h4 class="modal-title">二字定玩法规则</h4>
+						        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						      </div>
+						      <!-- 模态框内容 -->
+						      <div class="modal-body">
+						      	<h5>玩法提示</h5>
+						      	<p>从0-9任意选2个号码组成一注。</p>
+						      	<h5>中奖说明</h5>
+						      	<p>所选号码与开奖号码相同,且位置一致,即为中奖.</p>
+						      	<h5>举例</h5>
+						      	<p>开奖号:12345</p>
+						      	<p>中奖号:12xx; 1x3x; 1xx4; x23x; x2x4</p>
+						      </div>					 
+						    </div>
+						  </div>
+						</div>
+						<!-- ............. -->
+						<ul class="list-group">
+							<!-- 玩法按钮 -->
+							<li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.825rem;">
+								<span>赔率: 99</span>
+								<span data-bs-toggle="modal" data-bs-target="#mymodal" role="button">玩法提示<i class="bi bi-caret-right-fill"></i></span>
+							</li>
+							<!-- .................. -->
+							<li class="list-group-item">
+								<div class="mb-0">
+									<span class="text-danger">定位置</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="fixed.deleted" class="form-check-input" type="checkbox" id="btnradio1">
+										<label class="form-check-label" for="btnradio1">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="fixed.selected" class="form-check-input" type="checkbox" id="btnradio2">
+										<label class="form-check-label" for="btnradio2">取</label>
+									</div>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="mb-0">
+									<span class="text-danger">配全转</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="matchFullTurn.deleted" class="form-check-input" type="checkbox" id="inlineRadio3">
+										<label class="form-check-label" for="inlineRadio3">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="matchFullTurn.selected" class="form-check-input" type="checkbox" id="inlineRadio4">
+										<label class="form-check-label" for="inlineRadio4">取</label>
+									</div>
+								</div>
+							</li>
+							<li v-show="fixed.deleted || fixed.selected || (!matchFullTurn.deleted && !matchFullTurn.selected)" class="list-group-item">
+								<div class="row">
+									<div class="col pe-0">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span  class="input-group-text" id="addon-qian">万</span>
+											<input v-model="fixed.thousand" type="number" class="form-control" placeholder="0-9" aria-label="qian" aria-describedby="addon-qian">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span class="input-group-text" id="addon-bai">仟</span>
+											<input v-model="fixed.hundred"  type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+										</div>
+									</div>
+								</div>
+								<div class="row mt-1">
+									<div class="col pe-0">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span class="input-group-text" id="addon-shi">佰</span>
+											<input v-model="fixed.ten"  type="number" class="form-control" placeholder="0-9" aria-label="shi" aria-describedby="addon-shi">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span class="input-group-text" id="addon-ge">拾</span>
+											<input v-model="fixed.unit"  type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+										</div>
+									</div>
+								</div>
+							</li>
+							<li v-show="matchFullTurn.deleted || matchFullTurn.selected" class="list-group-item">
+								<div class="input-group input-group-sm ">
+									<input v-model="matchFullTurn.value1" type="number" class="form-control" placeholder="0-9" aria-label="Username">
+									<span class="input-group-text">配</span>
+									<input v-model="matchFullTurn.value2" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+								</div>
+							</li>
+							<!-- 合分......................... -->
+							<li class="list-group-item">
+								<div class="mb-1">
+									<span class="text-danger">合分</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="summation.deleted" class="form-check-input" type="checkbox" id="inlineRadio5">
+										<label class="form-check-label" for="inlineRadio5">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="summation.selected" class="form-check-input" type="checkbox" id="inlineRadio6">
+										<label class="form-check-label" for="inlineRadio6">取</label>
+									</div>
+								</div>
+								<div v-for="i in [0,1,2,3]" class="d-flex justify-content-start align-items-center mb-1">
+									<div class="input-group input-group-sm">
+										<div class="input-group-text">{{i + 1}}.</div>
+										<div class="input-group-text">
+											<input v-model="summation.items[i].indexs.thousand" class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1">
+										</div>
+										<div class="input-group-text">
+											<input v-model="summation.items[i].indexs.hundred" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+										</div>
+										<div class="input-group-text">
+											<input v-model="summation.items[i].indexs.ten" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+										</div>
+										<div class="input-group-text">
+											<input v-model="summation.items[i].indexs.unit" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+										</div>
+										<input type="number" v-model="summation.items[i].value" class="form-control" aria-label="Text input with checkbox" placeholder="0-9">
+									</div>
+								</div>
+							</li>
+							<!-- 不定位合分 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">不定位合分</span>
+									<div class="input-group-text">
+										<input type="checkbox" v-model="combineSummation.two" id="inlineRadio66">
+										<label class="form-check-label" for="inlineRadio66">两数合</label>
+									</div>
+									<input v-model="combineSummation.value" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							<!-- 全转 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">
+										<small>全转</small>
+									</span>
+									<input v-model="fullTurn" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							<!-- 排除 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">
+										<small>排除</small>
+									</span>
+									<input v-model="exclude" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							<!-- 乘号位置 -->
+							<li class="list-group-item">
+								<div class="d-flex justify-content-start">
+									<div class="mb-0 pe-2 text-danger">乘号位置</div>
+									<div class="input-group input-group-sm w-75">
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.thousand" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.hundred" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.ten" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.unit" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									</div>
+								</div>
+							</li>
+							<!-- 二字定含 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.deleted" class="form-check-input" type="checkbox" id="erzihanding1">
+									<label class="form-check-label" for="erzihanding1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.selected" class="form-check-input" type="checkbox" id="erzihanding2">
+									<label class="form-check-label" for="erzihanding2">取</label>
+								</div>
+								<div class="input-group input-group-sm">
+									<span class="input-group-text" id="addon-bai">二字定含</span>
+									<input v-model="digit.contains" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									<span class="input-group-text" id="addon-bai">二字复式</span>
+									<input v-model="digit.compound" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+								
+							</li>
+							<!-- 双重 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat.deleted" class="form-check-input" type="checkbox" id="shuangchong1">
+									<label class="form-check-label" for="shuangchong1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat.selected" class="form-check-input" type="checkbox" id="shuangchong2">
+									<label class="form-check-label" for="shuangchong2">取</label>
+								</div>
+								<span class="text-danger">(双重)</span>
+							</li>
+							<!-- 二兄弟 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial.deleted" class="form-check-input" type="checkbox" id="erxiongdi1">
+									<label class="form-check-label" for="erxiongdi1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial.selected" class="form-check-input" type="checkbox" id="erxiongdi2">
+									<label class="form-check-label" for="erxiongdi2">取</label>
+								</div>
+								<span class="text-danger">(二连)</span>
+							</li>
+							<!-- 对数 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.deleted" class="form-check-input" type="checkbox" id="duishu1">
+									<label class="form-check-label" for="duishu1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.selected" class="form-check-input" type="checkbox" id="duishu2">
+									<label class="form-check-label" for="duishu2">取</label>
+								</div>
+								<span class="text-danger">(对数)</span>
+								<div class="input-group input-group-sm">
+								  <input v-model="opposite.value1" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value2" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value3" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								</div>
+							</li>
+							<!-- 单 -->
+							<li v-for="i in [0,1,2,3]" class="list-group-item d-flex justify-content-start">
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].deleted" class="form-check-input" type="checkbox" :id="'dan'+i">
+									<label class="form-check-label" :for="'dan'+i">除</label>
+								</div>
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].selected" class="form-check-input" type="checkbox" :id="'dan0'+i">
+									<label class="form-check-label" :for="'dan0'+i">取</label>
+								</div>
+								<span class="text-danger me-2">({{attr[i].name}})</span>
+								<div class="input-group input-group-sm w-75">
+								  <div class="input-group-text">
+								    <input v-model="attr[i].thousand" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].hundred" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].ten" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].unit" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<!-- 三字定................................................. -->
+					<div v-show="way == 'ThreeFixed'" class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+						<!-- 玩法提示 -->
+						<div class="modal" id="sandmymodal">
+						  <div class="modal-dialog modal-dialog-centered">
+						    <div class="modal-content">
+						      <!-- 模态框头部 -->
+						      <div class="modal-header">
+						        <h4 class="modal-title">三字定玩法规则</h4>
+						        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						      </div>
+						      <!-- 模态框内容 -->
+						      <div class="modal-body">
+						      	<h5>玩法提示</h5>
+						      	<p>从0-9任意选3个号码组成一注。</p>
+						      	<h5>中奖说明</h5>
+						      	<p>所选号码与开奖号码相同,且位置一致,即为中奖.</p>
+						      	<h5>举例</h5>
+						      	<p>开奖号:12345</p>
+						      	<p>中奖号:123x; 12x4; 1x34; x234</p>
+						      </div>					 
+						    </div>
+						  </div>
+						</div>
+						<!-- .............. -->
+							<ul class="list-group">
+								<!-- .............. -->
+								<li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.825rem;">
+									<span>赔率: 990</span>
+									<span data-bs-toggle="modal" data-bs-target="#sandmymodal" role="button">玩法提示<i class="bi bi-caret-right-fill"></i></span>
+								</li>
+								<!-- ................ -->
+								<li class="list-group-item">
+									<span class="text-danger">定位置</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="fixed.deleted" type="checkbox" id="dingwei1">
+										<label class="form-check-label" for="dingwei1">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="fixed.selected" type="checkbox" id="dingwei2">
+										<label class="form-check-label" for="dingwei2">取</label>
+									</div>
+								</li>
+								<li class="list-group-item">
+									<span class="text-danger">配数全</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="matchFullTurn.deleted" type="checkbox">
+										<label class="form-check-label" for="inlineRadio3">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="matchFullTurn.selected" type="checkbox">
+										<label class="form-check-label" for="inlineRadio4">取</label>
+									</div>
+								</li>
+								<li v-show="fixed.deleted || fixed.selected || (!matchFullTurn.deleted && !matchFullTurn.selected)" class="list-group-item">
+									<div class="row">
+										<div class="col pe-0">
+											<div class="input-group input-group-sm flex-nowrap">
+												<span  class="input-group-text" id="addon-qian">万</span>
+												<input v-model="fixed.thousand" type="number" class="form-control" placeholder="0-9" aria-label="qian" aria-describedby="addon-qian">
+											</div>
+										</div>
+										<div class="col">
+											<div class="input-group input-group-sm flex-nowrap">
+												<span class="input-group-text" id="addon-bai">仟</span>
+												<input v-model="fixed.hundred" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+											</div>
+										</div>
+									</div>
+									<div class="row mt-1">
+										<div class="col pe-0">
+											<div class="input-group input-group-sm flex-nowrap">
+												<span class="input-group-text" id="addon-shi">佰</span>
+												<input v-model="fixed.ten" type="number" class="form-control" placeholder="0-9" aria-label="shi" aria-describedby="addon-shi">
+											</div>
+										</div>
+										<div class="col">
+											<div class="input-group input-group-sm flex-nowrap">
+												<span class="input-group-text" id="addon-ge">拾</span>
+												<input v-model="fixed.unit" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+											</div>
+										</div>
+									</div>
+								</li>
+								<li v-show="matchFullTurn.deleted || matchFullTurn.selected" class="list-group-item">
+									<div class="input-group input-group-sm">
+										<input v-model="matchFullTurn.value1" type="number" class="form-control" placeholder="0-9" aria-label="Username">
+										<span class="input-group-text">配</span>
+										<input v-model="matchFullTurn.value2" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+										<span class="input-group-text">配</span>
+										<input v-model="matchFullTurn.value3" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+									</div>
+								</li>
+								<!-- 合分......................... -->
+								<li class="list-group-item">
+									<div>
+										<span class="text-danger">合分</span>
+										<div class="form-check form-check-inline mb-0 me-1">
+											<input v-model="summation.deleted" class="form-check-input" type="checkbox" id="hefen3">
+											<label class="form-check-label" for="hefen3">除</label>
+										</div>
+										<div class="form-check form-check-inline mb-0 me-1">
+											<input v-model="summation.selected" class="form-check-input" type="checkbox" id="hefen30">
+											<label class="form-check-label" for="hefen30">取</label>
+										</div>
+									</div>
+									<div v-for="i in [0,1,2,3]" class="d-flex justify-content-start align-items-center mb-1">
+										<div class="input-group input-group-sm">
+											<div class="input-group-text">{{i + 1}}.</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.thousand" class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1">
+											</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.hundred" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.ten" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.unit" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											</div>
+											<input type="number" v-model="summation.items[i].value" class="form-control" placeholder="0-9">
+										</div>
+									</div>
+								</li>
+								<!-- 不定位合分 -->
+								<li class="list-group-item">
+									<div class="input-group input-group-sm">
+										<span class="input-group-text text-danger" id="addon-bai">不定位合分</span>
+										<div class="input-group-text">
+											<input type="checkbox" v-model="combineSummation.two" id="liangshuhe33">
+											<label class="form-check-label me-1" for="liangshuhe33">两数合</label>
+											<input type="checkbox" v-model="combineSummation.three" id="sanshuhe33">
+											<label class="form-check-label" for="sanshuhe33">三数合</label>
+										</div>
+										
+										<input v-model="combineSummation.value" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 全转 -->
+								<li class="list-group-item">
+									<div class="input-group input-group-sm">
+										<span class="input-group-text text-danger" id="addon-bai">全转</span>
+										<input v-model="fullTurn" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 排除 -->
+								<li class="list-group-item">
+									<div class="input-group input-group-sm">
+										<span class="input-group-text text-danger" id="addon-bai">排除</span>
+										<input v-model="exclude" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 乘号位置 -->
+								<li class="list-group-item">
+									<div class="d-flex justify-content-start">
+										<div class="mb-0 pe-2 text-danger">乘号位置</div>
+										<div class="input-group input-group-sm w-75">
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.thousand" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.hundred" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.ten" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.unit" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										</div>
+									</div>
+								</li>
+								
+								<!-- 三字定含 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1">
+										<input v-model="digit.deleted" class="form-check-input" type="checkbox" id="sanziding-chu">
+										<label class="form-check-label" for="sanziding-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1">
+										<input v-model="digit.selected" class="form-check-input" type="checkbox" id="sanziding-qu">
+										<label class="form-check-label" for="sanziding-qu">取</label>
+									</div>
+									<div class="input-group input-group-sm">
+										<span class="input-group-text" id="addon-bai">三字定含</span>
+										<input v-model="digit.contains" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+										<span class="input-group-text" id="addon-bai">三字复式</span>
+										<input v-model="digit.compound" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 双重 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat.deleted" class="form-check-input" type="checkbox" id="shuangchong-chu">
+										<label class="form-check-label" for="shuangchong-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat.selected" class="form-check-input" type="checkbox" id="shuangchong-qu">
+										<label class="form-check-label" for="shuangchong-qu">取</label>
+									</div>
+									<span class="text-danger">(双重)</span>
+									|
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat3.deleted" class="form-check-input" type="checkbox" id="sanchongsan-chu">
+										<label class="form-check-label" for="sanchongsan-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat3.selected" class="form-check-input" type="checkbox" id="sanchongsan-qu">
+										<label class="form-check-label" for="sanchongsan-qu">取</label>
+									</div>
+									<span class="text-danger">(三重)</span>
+								</li>
+								<!-- 二兄弟 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial.deleted" class="form-check-input" type="checkbox" id="erlian-chu">
+										<label class="form-check-label" for="erlian-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial.selected" class="form-check-input" type="checkbox" id="erlian-qu">
+										<label class="form-check-label" for="erlian-qu">取</label>
+									</div>
+									<span class="text-danger">(二连)</span>
+									|
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial3.deleted" class="form-check-input" type="checkbox" id="sanlian-chu">
+										<label class="form-check-label" for="sanlian-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial3.selected" class="form-check-input" type="checkbox" id="sanlian-qu">
+										<label class="form-check-label" for="sanlian-qu">取</label>
+									</div>
+									<span class="text-danger">(三连)</span>
+								</li>
+								<!-- 对数 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1">
+										<input v-model="opposite.deleted" class="form-check-input" type="checkbox" id="duishusan-chu">
+										<label class="form-check-label" for="duishusan-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1">
+										<input v-model="opposite.selected" class="form-check-input" type="checkbox" id="duishusan-qu">
+										<label class="form-check-label" for="duishusan-qu">取</label>
+									</div>
+									<span class="text-danger">(对数)</span>
+									<div class="input-group input-group-sm">
+									  <input v-model="opposite.value1" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+									  <input v-model="opposite.value2" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+									  <input v-model="opposite.value3" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+									</div>
+								</li>
+								<!-- 单 -->
+								<li v-for="i in [0,1,2,3]" class="list-group-item d-flex justify-content-start">
+									<div class="form-check form-check-inline me-2">
+										<input v-model="attr[i].deleted" class="form-check-input" type="checkbox" :id="'dan'+i">
+										<label class="form-check-label" :for="'dan'+i">除</label>
+									</div>
+									<div class="form-check form-check-inline me-2">
+										<input v-model="attr[i].selected" class="form-check-input" type="checkbox" :id="'dan0'+i">
+										<label class="form-check-label" :for="'dan0'+i">取</label>
+									</div>
+									<span class="text-danger me-2">({{attr[i].name}})</span>
+									<div class="input-group input-group-sm w-75">
+									  <div class="input-group-text">
+									    <input v-model="attr[i].thousand" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="attr[i].hundred" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="attr[i].ten" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="attr[i].unit" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									</div>
+								</li>
+							</ul>					
+					</div>
+					<!-- 四字定内容 -->
+					<div v-show="way == 'FourFixed'" class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+							<!-- 玩法提示 -->
+							<div class="modal" id="sdmymodal">
+							  <div class="modal-dialog modal-dialog-centered">
+							    <div class="modal-content">
+							      <!-- 模态框头部 -->
+							      <div class="modal-header">
+							        <h4 class="modal-title">四字定玩法规则</h4>
+							        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+							      </div>
+							      <!-- 模态框内容 -->
+							      <div class="modal-body">
+							      	<h5>玩法提示</h5>
+							      	<p>从0-9任意选4个号码组成一注。</p>
+							      	<h5>中奖说明</h5>
+							      	<p>所选号码与开奖号码相同,且位置一致,即为中奖.</p>
+							      	<h5>举例</h5>
+							      	<p>开奖号:12345</p>
+							      	<p>中奖号:1234</p>
+							      </div>					 
+							    </div>
+							  </div>
+							</div>
+							<!-- .............. -->
+							<ul class="list-group">
+								<!-- .............. -->
+								<li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.825rem;">
+									<span>赔率: 9900</span>
+									<span data-bs-toggle="modal" data-bs-target="#sdmymodal" role="button">玩法提示<i class="bi bi-caret-right-fill"></i></span>
+								</li>
+								<!-- ................ -->
+								<li class="list-group-item">
+									<span class="text-danger">定位置</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="fixed.deleted" type="checkbox" id="sizi-chu">
+										<label class="form-check-label" for="sizi-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="fixed.selected" type="checkbox" id="sizi-qu">
+										<label class="form-check-label" for="sizi-qu">取</label>
+									</div>
+								</li>
+								<li class="list-group-item">
+									<span class="text-danger">配数全</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="matchFullTurn.deleted" type="checkbox" id="peishu-chu">
+										<label class="form-check-label" for="peishu-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input class="form-check-input" v-model="matchFullTurn.selected" type="checkbox" id="peishu-qu">
+										<label class="form-check-label" for="peishu-qu">取</label>
+									</div>
+								</li>
+								<li v-show="fixed.deleted || fixed.selected || (!matchFullTurn.deleted && !matchFullTurn.selected)" class="list-group-item">
+									<div class="row">
+										<div class="col pe-0">
+											<div class="input-group flex-nowrap input-group-sm">
+												<span  class="input-group-text" id="addon-qian">万</span>
+												<input v-model="fixed.thousand" type="number" class="form-control" placeholder="0-9" aria-label="qian" aria-describedby="addon-qian">
+											</div>
+										</div>
+										<div class="col">
+											<div class="input-group flex-nowrap input-group-sm">
+												<span class="input-group-text" id="addon-bai">仟</span>
+												<input v-model="fixed.hundred" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+											</div>
+										</div>
+									</div>
+									<div class="row mt-1">
+										<div class="col pe-0">
+											<div class="input-group flex-nowrap input-group-sm">
+												<span class="input-group-text" id="addon-shi">佰</span>
+												<input v-model="fixed.ten" type="number" class="form-control" placeholder="0-9" aria-label="shi" aria-describedby="addon-shi">
+											</div>
+										</div>
+										<div class="col">
+											<div class="input-group flex-nowrap input-group-sm">
+												<span class="input-group-text" id="addon-ge">拾</span>
+												<input v-model="fixed.unit" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+											</div>
+										</div>
+									</div>
+								</li>
+								<li v-show="matchFullTurn.deleted || matchFullTurn.selected" class="list-group-item">
+									<div class="input-group input-group-sm">
+										<input v-model="matchFullTurn.value1" type="number" class="form-control" placeholder="0-9" aria-label="Username">
+										<span class="input-group-text">配</span>
+										<input v-model="matchFullTurn.value2" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+										<span class="input-group-text">配</span>
+										<input v-model="matchFullTurn.value3" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+										<span class="input-group-text">配</span>
+										<input v-model="matchFullTurn.value4" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+									</div>
+								</li>
+								<!-- 合分......................... -->
+								<li class="list-group-item">
+									<div class="mb-1">
+										<span class="text-danger">合分</span>
+										<div class="form-check form-check-inline mb-0 me-1">
+											<input v-model="summation.deleted" class="form-check-input" type="checkbox" id="sihefen-chu">
+											<label class="form-check-label" for="sihefen-chu">除</label>
+										</div>
+										<div class="form-check form-check-inline mb-0 me-1">
+											<input v-model="summation.selected" class="form-check-input" type="checkbox" id="sihefen-qu">
+											<label class="form-check-label" for="sihefen-qu">取</label>
+										</div>
+									</div>
+									<div v-for="i in [0,1,2,3]" class="d-flex justify-content-start align-items-center mb-1">
+										<div class="input-group input-group-sm">
+											<div class="input-group-text">{{i + 1}}.</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.thousand" class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1">
+											</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.hundred" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.ten" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											</div>
+											<div class="input-group-text">
+												<input v-model="summation.items[i].indexs.unit" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											</div>
+											<input type="number" v-model="summation.items[i].value" class="form-control" placeholder="0-9">
+										</div>
+									</div>
+								</li>
+								<!-- 不定位合分 -->
+								<li class="list-group-item">
+									<div class="input-group input-group-sm">
+										<span class="input-group-text text-danger" id="addon-bai">不定位合分</span>
+										<div class="input-group-text">
+											<input type="checkbox" v-model="combineSummation.two" id="siliangshuhe33">
+											<label class="form-check-label me-1" for="siliangshuhe33">两数合</label>
+											<input type="checkbox" v-model="combineSummation.three" id="sisanshuhe33">
+											<label class="form-check-label" for="sisanshuhe33">三数合</label>
+										</div>										
+										<input v-model="combineSummation.value" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 全转 -->
+								<li class="list-group-item">
+									<div class="input-group input-group-sm">
+										<span class="input-group-text text-danger" id="addon-bai">全转</span>
+										<input v-model="fullTurn" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 排除 -->
+								<li class="list-group-item">
+									<div class="input-group input-group-sm">
+										<span class="input-group-text text-danger" id="addon-bai">排除</span>
+										<input v-model="exclude" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 乘号位置 -->
+								<li class="list-group-item">
+									<div class="d-flex justify-content-start">
+										<div class="mb-0 pe-2 text-danger">乘号位置</div>
+										<div class="input-group input-group-sm w-75">
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.thousand" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.hundred" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.ten" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										  <div class="input-group-text">
+										    <input v-model="symbolLocation.unit" class="form-check-input mt-0" type="checkbox">
+										  </div>
+										</div>
+									</div>
+								</li>
+								<!-- 四字定含 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1">
+										<input v-model="digit.deleted" class="form-check-input" type="checkbox" id="sisanziding-chu">
+										<label class="form-check-label" for="sisanziding-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1">
+										<input v-model="digit.selected" class="form-check-input" type="checkbox" id="sisanziding-qu">
+										<label class="form-check-label" for="sisanziding-qu">取</label>
+									</div>
+									<div class="input-group input-group-sm">
+										<span class="input-group-text" id="addon-bai">四字定含</span>
+										<input v-model="digit.contains" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+										<span class="input-group-text" id="addon-bai">四字复式</span>
+										<input v-model="digit.compound" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									</div>
+								</li>
+								<!-- 双重 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat.deleted" class="form-check-input" type="checkbox" id="sishuangchong">
+										<label class="form-check-label" for="sishuangchong">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat.selected" class="form-check-input" type="checkbox" id="sishuangchong-qu">
+										<label class="form-check-label" for="sishuangchong-qu">取</label>
+									</div>
+									<span class="text-danger">(双重)</span>
+									|
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat3.deleted" class="form-check-input" type="checkbox" id="sisanchongsi-chu">
+										<label class="form-check-label" for="sisanchongsi-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat3.selected" class="form-check-input" type="checkbox" id="sisanchongsi-qu">
+										<label class="form-check-label" for="sisanchongsi-qu">取</label>
+									</div>
+									<span class="text-danger">(三重)</span><br>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat4.deleted" class="form-check-input" type="checkbox" id="sisanchongsan-chu">
+										<label class="form-check-label" for="sisanchongsan-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat4.selected" class="form-check-input" type="checkbox" id="sisanchongsan-qu">
+										<label class="form-check-label" for="sisanchongsan-qu">取</label>
+									</div>
+									<span class="text-danger">(四重)</span>
+									|
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat22.deleted" class="form-check-input" type="checkbox" id="sishuangshuang-chu">
+										<label class="form-check-label" for="sishuangshuang-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="repeat22.selected" class="form-check-input" type="checkbox" id="sishuangshuang-qu">
+										<label class="form-check-label" for="sishuangshuang-qu">取</label>
+									</div>
+									<span class="text-danger">(双双)</span>
+								</li>
+								<!-- 二兄弟 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial.deleted" class="form-check-input" type="checkbox" id="sier-chu">
+										<label class="form-check-label" for="sier-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial.selected" class="form-check-input" type="checkbox" id="sier-qu">
+										<label class="form-check-label" for="sier-qu">取</label>
+									</div>
+									<span class="text-danger">(二连)</span>
+									|
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial3.deleted" class="form-check-input" type="checkbox" id="siersan-chu">
+										<label class="form-check-label" for="siersan-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial3.selected" class="form-check-input" type="checkbox" id="siersan-qu">
+										<label class="form-check-label" for="siersan-qu">取</label>
+									</div>
+									<span class="text-danger">(三连)</span>
+									<br>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial4.deleted" class="form-check-input" type="checkbox" id="siersi-chu">
+										<label class="form-check-label" for="siersi-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1 mb-0">
+										<input v-model="serial4.selected" class="form-check-input" type="checkbox" id="siersi-qu">
+										<label class="form-check-label" for="siersi-qu">取</label>
+									</div>
+									<span class="text-danger">(四连)</span>
+								</li>
+								<!-- 对数 -->
+								<li class="list-group-item">
+									<div class="form-check form-check-inline me-1">
+										<input v-model="opposite.deleted" class="form-check-input" type="checkbox" id="duishusan-chu">
+										<label class="form-check-label" for="duishusan-chu">除</label>
+									</div>
+									<div class="form-check form-check-inline me-1">
+										<input v-model="opposite.selected" class="form-check-input" type="checkbox" id="duishusan-qu">
+										<label class="form-check-label" for="duishusan-qu">取</label>
+									</div>
+									<span class="text-danger">(对数)</span>
+									<div class="input-group input-group-sm">
+									  <input v-model="opposite.value1" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+									  <input v-model="opposite.value2" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+									  <input v-model="opposite.value3" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+									</div>
+								</li>
+								<!-- 单 -->
+								<li v-for="i in [0,1,2,3]" class="list-group-item d-flex justify-content-start">
+									<div class="form-check form-check-inline me-2">
+										<input v-model="attr[i].deleted" class="form-check-input" type="checkbox" :id="'dan'+i">
+										<label class="form-check-label" :for="'dan'+i">除</label>
+									</div>
+									<div class="form-check form-check-inline me-2">
+										<input v-model="attr[i].selected" class="form-check-input" type="checkbox" :id="'dan0'+i">
+										<label class="form-check-label" :for="'dan0'+i">取</label>
+									</div>
+									<span class="text-danger me-2">({{attr[i].name}})</span>
+									<div class="input-group input-group-sm w-75">
+									  <div class="input-group-text">
+									    <input v-model="attr[i].thousand" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="attr[i].hundred" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="attr[i].ten" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="attr[i].unit" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									</div>
+								</li>
+							</ul>
+						
+					</div>
+					<!-- 二字现 -->
+					<div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+						<!-- 玩法提示 -->
+						<div class="modal" id="exmymodal">
+						  <div class="modal-dialog modal-dialog-centered">
+						    <div class="modal-content">
+						      <!-- 模态框头部 -->
+						      <div class="modal-header">
+						        <h4 class="modal-title">二字现玩法规则</h4>
+						        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						      </div>
+						      <!-- 模态框内容 -->
+						      <div class="modal-body">
+						      	<h5>玩法提示</h5>
+						      	<p>从0-9任意选2个号码组成一注。</p>
+						      	<h5>中奖说明</h5>
+						      	<p>所选号码与开奖号码相同,位置不限,即为中奖.</p>
+						      	<h5>举例</h5>
+						      	<p>开奖号:12345</p>
+						      	<p>中奖号:12; 13; 14; 23; 24; 34</p>
+						      </div>					 
+						    </div>
+						  </div>
+						</div>
+						<!-- .............. -->
+						<ul class="list-group">
+							<!-- .............. -->
+							<li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.825rem;">
+								<span>赔率: 9.9</span>
+								<span data-bs-toggle="modal" data-bs-target="#exmymodal" role="button">玩法提示<i class="bi bi-caret-right-fill"></i></span>
+							</li>
+							<!-- ................ -->
+							<li class="list-group-item">
+								<span class="text-danger">配数</span>
+								<div class="form-check form-check-inline mb-0 me-1">
+									<input v-model="matchFullTurn.deleted" class="form-check-input" type="checkbox" id="erzixian-chu">
+									<label class="form-check-label" for="erzixian-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline mb-0 me-1">
+									<input v-model="matchFullTurn.selected" class="form-check-input" type="checkbox" id="erzixian-qu">
+									<label class="form-check-label" for="erzixian-qu">取</label>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<input v-model="matchFullTurn.value1" type="number" class="form-control" placeholder="0-9" aria-label="Username">
+									<span class="input-group-text">配</span>
+									<input v-model="matchFullTurn.value2" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+								</div>
+							</li>
+							<!-- 不定位合分 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">不定位合分</span>
+									<div class="input-group-text">
+										<input v-model="combineSummation.two" type="checkbox" id="erzixianhe">
+										<label class="form-check-label" for="erzixianhe">两数合</label>
+									</div>
+									<input v-model="combineSummation.value" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							<!-- 二字现含 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.deleted" class="form-check-input" type="checkbox" id="erzihan-chu">
+									<label class="form-check-label" for="erzihan-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.selected" class="form-check-input" type="checkbox" id="erzihan-qu">
+									<label class="form-check-label" for="erzihan-qu">取</label>
+								</div>
+								<div class="input-group input-group-sm">
+									<span class="input-group-text" id="addon-bai">二字定含</span>
+									<input v-model="digit.contains" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									<span class="input-group-text" id="addon-bai">二字现复式</span>
+									<input v-model="digit.compound" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							
+							<!-- 双重 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="repeat.deleted" class="form-check-input" type="checkbox" id="erxiansc-chu">
+									<label class="form-check-label" for="erxiansc-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="repeat.selected" class="form-check-input" type="checkbox" id="erxiansc-qu">
+									<label class="form-check-label" for="erxiansc-qu">取</label>
+								</div>
+								<span class="text-danger">(双重)</span>
+							</li>
+							<!-- 二兄弟 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="serial.deleted" class="form-check-input" type="checkbox" id="erxianexd-chu">
+									<label class="form-check-label" for="erxianexd-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="serial.selected" class="form-check-input" type="checkbox" id="erxianexd-qu">
+									<label class="form-check-label" for="erxianexd-qu">取</label>
+								</div>
+								<span class="text-danger">(二兄弟)</span>
+							</li>
+							<!-- 对数 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.deleted" class="form-check-input" type="checkbox" id="duishusan-chu">
+									<label class="form-check-label" for="duishusan-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.selected" class="form-check-input" type="checkbox" id="duishusan-qu">
+									<label class="form-check-label" for="duishusan-qu">取</label>
+								</div>
+								<span class="text-danger">(对数)</span>
+								<div class="input-group input-group-sm">
+								  <input v-model="opposite.value1" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value2" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value3" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								</div>
+							</li>
+							<!-- 单 -->
+							<li v-for="i in [0,1,2,3]" class="list-group-item d-flex justify-content-start">
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].deleted" class="form-check-input" type="checkbox" :id="'dan'+i">
+									<label class="form-check-label" :for="'dan'+i">除</label>
+								</div>
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].selected" class="form-check-input" type="checkbox" :id="'dan0'+i">
+									<label class="form-check-label" :for="'dan0'+i">取</label>
+								</div>
+								<span class="text-danger me-2">({{attr[i].name}})</span>
+								<div class="input-group input-group-sm w-75">
+								  <div class="input-group-text">
+								    <input v-model="attr[i].thousand" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].hundred" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].ten" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].unit" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<!-- 三字现 -->
+					<div class="tab-pane fade" id="list-sanxian" role="tabpanel" aria-labelledby="list-sanxian-list">
+						<!-- 玩法提示 -->
+						<div class="modal" id="sanxmymodal">
+						  <div class="modal-dialog modal-dialog-centered">
+						    <div class="modal-content">
+						      <!-- 模态框头部 -->
+						      <div class="modal-header">
+						        <h4 class="modal-title">三字现玩法规则</h4>
+						        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						      </div>
+						      <!-- 模态框内容 -->
+						      <div class="modal-body">
+						      	<h5>玩法提示</h5>
+						      	<p>从0-9任意选3个号码组成一注。</p>
+						      	<h5>中奖说明</h5>
+						      	<p>所选号码与开奖号码相同,位置不限,即为中奖.</p>
+						      	<h5>举例</h5>
+						      	<p>开奖号:12345</p>
+						      	<p>中奖号:123; 124; 134; 234</p>
+						      </div>					 
+						    </div>
+						  </div>
+						</div>
+						<!-- .............. -->
+						<ul class="list-group">
+							<!-- .............. -->
+							<li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.825rem;">
+								<span>赔率: 48</span>
+								<span data-bs-toggle="modal" data-bs-target="#sanxmymodal" role="button">玩法提示<i class="bi bi-caret-right-fill"></i></span>
+							</li>
+							<!-- ................ -->
+							<li class="list-group-item">
+								<span class="text-danger">配数</span>
+								<div class="form-check form-check-inline mb-0 me-1">
+									<input v-model="matchFullTurn.deleted" class="form-check-input" type="checkbox" id="sanzixian-chu">
+									<label class="form-check-label" for="sanzixian-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline mb-0 me-1">
+									<input v-model="matchFullTurn.selected" class="form-check-input" type="checkbox" id="sanzixian-qu">
+									<label class="form-check-label" for="sanzixian-qu">取</label>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<input v-model="matchFullTurn.value1" type="number" class="form-control" placeholder="0-9" aria-label="Username">
+									<span class="input-group-text">配</span>
+									<input v-model="matchFullTurn.value2" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+									<span class="input-group-text">配</span>
+									<input v-model="matchFullTurn.value3" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+								</div>
+							</li>
+							<!-- 不定位合分 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">不定位合分</span>
+									<div class="input-group-text">
+										<input v-model="combineSummation.two" type="checkbox" id="sanxian-erhe">
+										<label class="form-check-label" for="sanxian-erhe">两数合</label>
+
+									</div>
+									<div class="input-group-text">
+										<input v-model="combineSummation.three" type="checkbox" id="sanxian-sanhe">
+										<label class="form-check-label" for="sanxian-sanhe">三数合</label>
+									</div>
+									<input v-model="combineSummation.value" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							<!-- 二字现含 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.deleted" class="form-check-input" type="checkbox" id="erzihan-chu">
+									<label class="form-check-label" for="erzihan-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.selected" class="form-check-input" type="checkbox" id="erzihan-qu">
+									<label class="form-check-label" for="erzihan-qu">取</label>
+								</div>
+								<div class="input-group input-group-sm">
+									<span class="input-group-text" id="addon-bai">三字定含</span>
+									<input v-model="digit.contains" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									<span class="input-group-text" id="addon-bai">三字现复式</span>
+									<input v-model="digit.compound" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>	
+
+							<!-- 双重 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat.deleted" class="form-check-input" type="checkbox" id="shuangchong-chu">
+									<label class="form-check-label" for="shuangchong-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat.selected" class="form-check-input" type="checkbox" id="shuangchong-qu">
+									<label class="form-check-label" for="shuangchong-qu">取</label>
+								</div>
+								<span class="text-danger">(双重)</span>
+								|
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat3.deleted" class="form-check-input" type="checkbox" id="sanchongsan-chu">
+									<label class="form-check-label" for="sanchongsan-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat3.selected" class="form-check-input" type="checkbox" id="sanchongsan-qu">
+									<label class="form-check-label" for="sanchongsan-qu">取</label>
+								</div>
+								<span class="text-danger">(三重)</span>
+							</li>
+							<!-- 二兄弟 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial.deleted" class="form-check-input" type="checkbox" id="erlian-chu">
+									<label class="form-check-label" for="erlian-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial.selected" class="form-check-input" type="checkbox" id="erlian-qu">
+									<label class="form-check-label" for="erlian-qu">取</label>
+								</div>
+								<span class="text-danger">(二连)</span>
+								|
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial3.deleted" class="form-check-input" type="checkbox" id="sanlian-chu">
+									<label class="form-check-label" for="sanlian-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial3.selected" class="form-check-input" type="checkbox" id="sanlian-qu">
+									<label class="form-check-label" for="sanlian-qu">取</label>
+								</div>
+								<span class="text-danger">(三连)</span>
+							</li>
+							<!-- 对数 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.deleted" class="form-check-input" type="checkbox" id="duishusan-chu">
+									<label class="form-check-label" for="duishusan-chu">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.selected" class="form-check-input" type="checkbox" id="duishusan-qu">
+									<label class="form-check-label" for="duishusan-qu">取</label>
+								</div>
+								<span class="text-danger">(对数)</span>
+								<div class="input-group input-group-sm">
+								  <input v-model="opposite.value1" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value2" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value3" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								</div>
+							</li>
+							<!-- 单 -->
+							<li v-for="i in [0,1,2,3]" class="list-group-item d-flex justify-content-start">
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].deleted" class="form-check-input" type="checkbox" :id="'dan'+i">
+									<label class="form-check-label" :for="'dan'+i">除</label>
+								</div>
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].selected" class="form-check-input" type="checkbox" :id="'dan0'+i">
+									<label class="form-check-label" :for="'dan0'+i">取</label>
+								</div>
+								<span class="text-danger me-2">({{attr[i].name}})</span>
+								<div class="input-group input-group-sm w-75">
+								  <div class="input-group-text">
+								    <input v-model="attr[i].thousand" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].hundred" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].ten" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].unit" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<!-- 四字现 -->
+					<div class="tab-pane fade" id="list-sixian" role="tabpanel" aria-labelledby="list-sixian-list">
+						<!-- 玩法提示 -->
+						<div class="modal" id="sxmymodal">
+						  <div class="modal-dialog modal-dialog-centered">
+						    <div class="modal-content">
+						      <!-- 模态框头部 -->
+						      <div class="modal-header">
+						        <h4 class="modal-title">四字现玩法规则</h4>
+						        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						      </div>
+						      <!-- 模态框内容 -->
+						      <div class="modal-body">
+						      	<h5>玩法提示</h5>
+						      	<p>从0-9任意选4个号码组成一注。</p>
+						      	<h5>中奖说明</h5>
+						      	<p>所选号码与开奖号码相同,位置不限,即为中奖.</p>
+						      	<h5>举例</h5>
+						      	<p>开奖号:12345</p>
+						      	<p>中奖号:1234</p>
+						      </div>					 
+						    </div>
+						  </div>
+						</div>
+						<!-- .............. -->
+						<ul class="list-group">
+							<!-- .............. -->
+							<li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.825rem;">
+								<span>赔率: 378</span>
+								<span data-bs-toggle="modal" data-bs-target="#sxmymodal" role="button">玩法提示<i class="bi bi-caret-right-fill"></i></span>
+							</li>
+							<!-- ................ -->
+						<li class="list-group-item">
+							<span class="text-danger">配数</span>
+							<div class="form-check form-check-inline mb-0 me-1">
+								<input class="form-check-input" v-model="matchFullTurn.deleted" type="checkbox" id="peishu-chu">
+								<label class="form-check-label" for="peishu-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline mb-0 me-1">
+								<input class="form-check-input" v-model="matchFullTurn.selected" type="checkbox" id="peishu-qu">
+								<label class="form-check-label" for="peishu-qu">取</label>
+							</div>
+						</li>
+						<li class="list-group-item">
+							<div class="input-group input-group-sm">
+								<input v-model="matchFullTurn.value1" type="number" class="form-control" placeholder="0-9" aria-label="Username">
+								<span class="input-group-text">配</span>
+								<input v-model="matchFullTurn.value2" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+								<span class="input-group-text">配</span>
+								<input v-model="matchFullTurn.value3" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+								<span class="input-group-text">配</span>
+								<input v-model="matchFullTurn.value4" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+							</div>
+						</li>
+						<!-- 不定位合分 -->
+						<li class="list-group-item">
+							<div class="input-group input-group-sm">
+								<span class="input-group-text text-danger" id="addon-bai">不定位合分</span>
+								<div class="input-group-text">
+									<input type="checkbox" v-model="combineSummation.two" id="siliangshuhe33">
+									<label class="form-check-label me-1" for="siliangshuhe33">两数合</label>
+									<input type="checkbox" v-model="combineSummation.three" id="sisanshuhe33">
+									<label class="form-check-label" for="sisanshuhe33">三数合</label>
+								</div>										
+								<input v-model="combineSummation.value" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+							</div>
+						</li>
+						<!-- 二字现含 -->
+						<li class="list-group-item">
+							<div class="form-check form-check-inline me-1">
+								<input v-model="digit.deleted" class="form-check-input" type="checkbox" id="sisanziding-chu">
+								<label class="form-check-label" for="sisanziding-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1">
+								<input v-model="digit.selected" class="form-check-input" type="checkbox" id="sisanziding-qu">
+								<label class="form-check-label" for="sisanziding-qu">取</label>
+							</div>
+							<div class="input-group input-group-sm">
+								<span class="input-group-text" id="addon-bai">四字定含</span>
+								<input v-model="digit.contains" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								<span class="input-group-text" id="addon-bai">四字复式</span>
+								<input v-model="digit.compound" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+							</div>
+						</li>
+						
+						<!-- 双重 -->
+						<li class="list-group-item">
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="repeat.deleted" class="form-check-input" type="checkbox" id="sishuangchong">
+								<label class="form-check-label" for="sishuangchong">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="repeat.selected" class="form-check-input" type="checkbox" id="sishuangchong-qu">
+								<label class="form-check-label" for="sishuangchong-qu">取</label>
+							</div>
+							<span class="text-danger">(双重)</span>
+							|
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="repeat3.deleted" class="form-check-input" type="checkbox" id="sisanchongsi-chu">
+								<label class="form-check-label" for="sisanchongsi-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="repeat3.selected" class="form-check-input" type="checkbox" id="sisanchongsi-qu">
+								<label class="form-check-label" for="sisanchongsi-qu">取</label>
+							</div>
+							<span class="text-danger">(三重)</span><br>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="repeat4.deleted" class="form-check-input" type="checkbox" id="sisanchongsan-chu">
+								<label class="form-check-label" for="sisanchongsan-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="repeat4.selected" class="form-check-input" type="checkbox" id="sisanchongsan-qu">
+								<label class="form-check-label" for="sisanchongsan-qu">取</label>
+							</div>
+							<span class="text-danger">(四重)</span>
+						</li>
+						<!-- 二兄弟 -->
+						<li class="list-group-item">
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="serial.deleted" class="form-check-input" type="checkbox" id="sier-chu">
+								<label class="form-check-label" for="sier-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="serial.selected" class="form-check-input" type="checkbox" id="sier-qu">
+								<label class="form-check-label" for="sier-qu">取</label>
+							</div>
+							<span class="text-danger">(二连)</span>
+							|
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="serial3.deleted" class="form-check-input" type="checkbox" id="siersan-chu">
+								<label class="form-check-label" for="siersan-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="serial3.selected" class="form-check-input" type="checkbox" id="siersan-qu">
+								<label class="form-check-label" for="siersan-qu">取</label>
+							</div>
+							<span class="text-danger">(三连)</span>
+							<br>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="serial4.deleted" class="form-check-input" type="checkbox" id="siersi-chu">
+								<label class="form-check-label" for="siersi-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1 mb-0">
+								<input v-model="serial4.selected" class="form-check-input" type="checkbox" id="siersi-qu">
+								<label class="form-check-label" for="siersi-qu">取</label>
+							</div>
+							<span class="text-danger">(四连)</span>
+						</li>
+						<!-- 对数 -->
+						<li class="list-group-item">
+							<div class="form-check form-check-inline me-1">
+								<input v-model="opposite.deleted" class="form-check-input" type="checkbox" id="duishusan-chu">
+								<label class="form-check-label" for="duishusan-chu">除</label>
+							</div>
+							<div class="form-check form-check-inline me-1">
+								<input v-model="opposite.selected" class="form-check-input" type="checkbox" id="duishusan-qu">
+								<label class="form-check-label" for="duishusan-qu">取</label>
+							</div>
+							<span class="text-danger">(对数)</span>
+							<div class="input-group input-group-sm">
+							  <input v-model="opposite.value1" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+							  <input v-model="opposite.value2" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+							  <input v-model="opposite.value3" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+							</div>
+						</li>
+						<!-- 单 -->
+						<li v-for="i in [0,1,2,3]" class="list-group-item d-flex justify-content-start">
+							<div class="form-check form-check-inline me-2">
+								<input v-model="attr[i].deleted" class="form-check-input" type="checkbox" :id="'dan'+i">
+								<label class="form-check-label" :for="'dan'+i">除</label>
+							</div>
+							<div class="form-check form-check-inline me-2">
+								<input v-model="attr[i].selected" class="form-check-input" type="checkbox" :id="'dan0'+i">
+								<label class="form-check-label" :for="'dan0'+i">取</label>
+							</div>
+							<span class="text-danger me-2">({{attr[i].name}})</span>
+							<div class="input-group input-group-sm w-75">
+							  <div class="input-group-text">
+							    <input v-model="attr[i].thousand" class="form-check-input mt-0" type="checkbox">
+							  </div>
+							  <div class="input-group-text">
+							    <input v-model="attr[i].hundred" class="form-check-input mt-0" type="checkbox">
+							  </div>
+							  <div class="input-group-text">
+							    <input v-model="attr[i].ten" class="form-check-input mt-0" type="checkbox">
+							  </div>
+							  <div class="input-group-text">
+							    <input v-model="attr[i].unit" class="form-check-input mt-0" type="checkbox">
+							  </div>
+							</div>
+						</li>
+					</ul>
+				</div>
+					<!-- 五位二定 -->
+					<div class="tab-pane fade" id="list-wuer" role="tabpanel" aria-labelledby="list-wuer-list">
+						<!-- 玩法提示 -->
+						<div class="modal" id="wwmymodal">
+						  <div class="modal-dialog modal-dialog-centered">
+						    <div class="modal-content">
+						      <!-- 模态框头部 -->
+						      <div class="modal-header">
+						        <h4 class="modal-title">五位二定玩法规则</h4>
+						        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						      </div>
+						      <!-- 模态框内容 -->
+						      <div class="modal-body">
+						      	<h5>玩法提示</h5>
+						      	<p>从0-9任意选2个号码组成一注。</p>
+						      	<h5>中奖说明</h5>
+						      	<p>所选号码与开奖号码相同,且位置一致,即为中奖.</p>
+						      	<h5>举例</h5>
+						      	<p>开奖号:12345</p>
+						      	<p>中奖号:1xxx5; x2xx5; xx3x5; xxx45</p>
+						      </div>					 
+						    </div>
+						  </div>
+						</div>
+						<!-- .............. -->
+						<ul class="list-group">
+							<!-- .............. -->
+							<li class="list-group-item d-flex justify-content-between align-items-center" style="font-size:0.825rem;">
+								<span>赔率: 99</span>
+								<span data-bs-toggle="modal" data-bs-target="#wwmymodal" role="button">玩法提示<i class="bi bi-caret-right-fill"></i></span>
+							</li>
+							<!-- ................ -->
+							<li class="list-group-item">
+								<div class="mb-0">
+									<span class="text-danger">定位置</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="fixed.deleted" class="form-check-input" type="checkbox" id="btnradio1">
+										<label class="form-check-label" for="btnradio1">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="fixed.selected" class="form-check-input" type="checkbox" id="btnradio2">
+										<label class="form-check-label" for="btnradio2">取</label>
+									</div>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="mb-0">
+									<span class="text-danger">配全转</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="matchFullTurn.deleted" class="form-check-input" type="checkbox" id="inlineRadio3">
+										<label class="form-check-label" for="inlineRadio3">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="matchFullTurn.selected" class="form-check-input" type="checkbox" id="inlineRadio4">
+										<label class="form-check-label" for="inlineRadio4">取</label>
+									</div>
+								</div>
+							</li>
+							<li v-show="fixed.deleted || fixed.selected || (!matchFullTurn.deleted && !matchFullTurn.selected)" class="list-group-item">
+								<div class="row">
+									<div class="col pe-0">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span  class="input-group-text" id="addon-qian">万</span>
+											<input v-model="fixed.thousand" type="number" class="form-control" placeholder="0-9" aria-label="qian" aria-describedby="addon-qian">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span class="input-group-text" id="addon-bai">仟</span>
+											<input v-model="fixed.hundred"  type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+										</div>
+									</div>
+								</div>
+								<div class="row mt-1">
+									<div class="col pe-0">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span class="input-group-text" id="addon-shi">佰</span>
+											<input v-model="fixed.ten"  type="number" class="form-control" placeholder="0-9" aria-label="shi" aria-describedby="addon-shi">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span class="input-group-text" id="addon-ge">拾</span>
+											<input v-model="fixed.unit"  type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+										</div>
+									</div>
+								</div>
+								<div class="row mt-1">
+									<div class="col pe-0">
+										<div class="input-group input-group-sm flex-nowrap">
+											<span class="input-group-text" id="addon-shi">五</span>
+											<input v-model="fixed.five" type="number" class="form-control" placeholder="0-9" aria-label="shi" aria-describedby="addon-shi">
+										</div>
+									</div>
+								</div>
+							</li>
+							<li v-show="matchFullTurn.deleted || matchFullTurn.selected" class="list-group-item">
+								<div class="input-group input-group-sm ">
+									<input v-model="matchFullTurn.value1" type="number" class="form-control" placeholder="0-9" aria-label="Username">
+									<span class="input-group-text">配</span>
+									<input v-model="matchFullTurn.value2" type="number" class="form-control" placeholder="0-9" aria-label="Server">
+								</div>
+							</li>
+							<!-- 合分......................... -->
+							<li class="list-group-item">
+								<div class="mb-1">
+									<span class="text-danger">合分</span>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="summation.deleted" class="form-check-input" type="checkbox" id="inlineRadio5">
+										<label class="form-check-label" for="inlineRadio5">除</label>
+									</div>
+									<div class="form-check form-check-inline mb-0 me-1">
+										<input v-model="summation.selected" class="form-check-input" type="checkbox" id="inlineRadio6">
+										<label class="form-check-label" for="inlineRadio6">取</label>
+									</div>
+								</div>
+								<div v-for="i in [0,1,2,3]" class="d-flex justify-content-start align-items-center mb-1">
+									<div class="input-group input-group-sm">
+										<div class="input-group-text">{{i + 1}}.</div>
+										<div class="input-group-text">
+											<input v-if="i == 0" v-model="summation.items[i].indexs.thousand" class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1">
+											<input v-else  class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1" disabled>
+										</div>
+										<div class="input-group-text">
+											<input v-if="i == 1" v-model="summation.items[i].indexs.hundred" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											<input v-else  class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1" disabled>
+										</div>
+										<div class="input-group-text">
+											<input v-if="i == 2" v-model="summation.items[i].indexs.ten" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											<input v-else  class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1" disabled>
+
+										</div>
+										<div class="input-group-text">
+											<input v-if="i == 3" v-model="summation.items[i].indexs.unit" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											<input v-else  class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1" disabled>
+
+										</div>
+										<div class="input-group-text">
+											<input v-model="summation.items[i].indexs.five" class="form-check-input mt-0" type="checkbox" value="option2" id="inlineCheckbox2">
+											<input v-else  class="form-check-input mt-0" type="checkbox" id="inlineCheckbox1" value="option1" disabled>
+							
+										</div>
+										<input type="number" v-model="summation.items[i].value" class="form-control" aria-label="Text input with checkbox" placeholder="0-9">
+									</div>
+								</div>
+							</li>
+							<!-- 不定位合分 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">不定位合分</span>
+									<div class="input-group-text">
+										<input type="checkbox" v-model="combineSummation.two" id="inlineRadio66">
+										<label class="form-check-label" for="inlineRadio66">两数合</label>
+									</div>
+									<input v-model="combineSummation.value" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							<!-- 全转 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">
+										<small>全转</small>
+									</span>
+									<input v-model="fullTurn" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+
+							<!-- 排除 -->
+							<li class="list-group-item">
+								<div class="input-group input-group-sm">
+									<span class="input-group-text text-danger" id="addon-bai">排除</span>
+									<input v-model="exclude" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+							</li>
+							<!-- 乘号位置 -->
+							<li class="list-group-item">
+								<div class="d-flex justify-content-start">
+									<div class="mb-0 pe-2 text-danger">乘号位置</div>
+									<div class="input-group input-group-sm w-75">
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.thousand" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.hundred" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.ten" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.unit" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									  <div class="input-group-text">
+									    <input v-model="symbolLocation.five" class="form-check-input mt-0" type="checkbox">
+									  </div>
+									</div>
+								</div>
+							</li>
+							<!-- 二字定含 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.deleted" class="form-check-input" type="checkbox" id="erzihanding1">
+									<label class="form-check-label" for="erzihanding1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="digit.selected" class="form-check-input" type="checkbox" id="erzihanding2">
+									<label class="form-check-label" for="erzihanding2">取</label>
+								</div>
+								<div class="input-group input-group-sm">
+									<span class="input-group-text" id="addon-bai">二字定含</span>
+									<input v-model="digit.contains" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+									<span class="input-group-text" id="addon-bai">二字复式</span>
+									<input v-model="digit.compound" type="number" class="form-control" placeholder="0-9" aria-label="bai" aria-describedby="addon-bai">
+								</div>
+								
+							</li>
+							<!-- 双重 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat.deleted" class="form-check-input" type="checkbox" id="shuangchong1">
+									<label class="form-check-label" for="shuangchong1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="repeat.selected" class="form-check-input" type="checkbox" id="shuangchong2">
+									<label class="form-check-label" for="shuangchong2">取</label>
+								</div>
+								<span class="text-danger">(双重)</span>
+							</li>
+							<!-- 二兄弟 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial.deleted" class="form-check-input" type="checkbox" id="erxiongdi1">
+									<label class="form-check-label" for="erxiongdi1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1 mb-0">
+									<input v-model="serial.selected" class="form-check-input" type="checkbox" id="erxiongdi2">
+									<label class="form-check-label" for="erxiongdi2">取</label>
+								</div>
+								<span class="text-danger">(二连)</span>
+							</li>
+							<!-- 对数 -->
+							<li class="list-group-item">
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.deleted" class="form-check-input" type="checkbox" id="duishu1">
+									<label class="form-check-label" for="duishu1">除</label>
+								</div>
+								<div class="form-check form-check-inline me-1">
+									<input v-model="opposite.selected" class="form-check-input" type="checkbox" id="duishu2">
+									<label class="form-check-label" for="duishu2">取</label>
+								</div>
+								<span class="text-danger">(对数)</span>
+								<div class="input-group input-group-sm">
+								  <input v-model="opposite.value1" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value2" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								  <input v-model="opposite.value3" type="number" class="form-control" placeholder="0-9" aria-label="ge" aria-describedby="addon-ge">
+								</div>
+							</li>
+							<!-- 单 -->
+							<li v-for="i in [0,1,2,3]" class="list-group-item d-flex justify-content-start">
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].deleted" class="form-check-input" type="checkbox" :id="'dan'+i">
+									<label class="form-check-label" :for="'dan'+i">除</label>
+								</div>
+								<div class="form-check form-check-inline me-2">
+									<input v-model="attr[i].selected" class="form-check-input" type="checkbox" :id="'dan0'+i">
+									<label class="form-check-label" :for="'dan0'+i">取</label>
+								</div>
+								<span class="text-danger me-2">({{attr[i].name}})</span>
+								<div class="input-group input-group-sm w-75">
+								  <div class="input-group-text">
+								    <input v-model="attr[i].thousand" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].hundred" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].ten" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								  <div class="input-group-text">
+								    <input v-model="attr[i].unit" class="form-check-input mt-0" type="checkbox">
+								  </div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<!-- 生成提交 -->
+				      <div class="card mt-3 sticky-bottom">
+				      	<div class="card-body text-center">
+				      		<div class="mb-1"><span>可用余额:</span><span class="text-danger">{{(usable / 100).toFixed(2)}}</span><i @click="getUsable" style="padding-left: 5px;" class="bi bi-arrow-repeat"></i></div>
+		      				<div class="btn-group d-flex">
+		      				  <button @click="build" type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#Haoma" aria-controls="Haoma">生成</button>
+		      				  <button @click="resetSelectedParam" type="button" class="btn btn-secondary">复位</button>
+		      				</div>
+				      	</div>
+				      </div>
+				    <!-- 生成号码框 -->
+				      <div class="offcanvas offcanvas-end" tabindex="-1" id="Haoma" aria-labelledby="HaomaLabel" data-bs-scroll="false">
+				        <div class="offcanvas-header border border-bottom-1">
+				          <h6 class="offcanvas-title" id="offcanvasExampleLabel">生成号码框</h6>
+				          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				        </div>
+				        <div class="offcanvas-body pb-0">
+			                 <!-- ........ -->	                
+		                 	<div class="container mb-3">
+		           	      		<div class="row text-center row-cols-5">
+		           	      			<div v-for="i in selectedNumbers" class="col border p-2">{{i}}</div>
+		           	      		</div>
+		           	      	</div>    
+			                 <!-- 发送框 -->
+			                 <div class="card mt-1 bg-secondary sticky-bottom text-white">
+			                 	<div  class="card-header"><a>可用余额:</a>
+			                 		<a class="link-warning text-decoration-none">{{(usable / 100).toFixed(2)}}</a><i @click="getUsable" style="padding-left: 5px;" class="bi bi-arrow-repeat"></i></div>
+			                 	<div class="card-body py-2">
+			                 		<span class="card-text">笔数: {{selectedNumbers.length}}</span>
+			                 		<span class="card-text">金额: {{(selectedNumbers.length * (amount||0)).toFixed(2)}}元</span>
+			                 	</div>
+			                 	<div class="card-footer">
+			                 		<div class="input-group mb-3">
+			                 			<span  class="input-group-text">金额</span>
+			                 			<input v-model="amount" type="number" class="form-control" placeholder="输入下注金额" id="demo" name="email">
+			                 			<button @click="betting" class="btn btn-success">下注</button>
+			                 		</div>
+			                 	</div>
+			                 </div>    
+				        </div>
+						<div id="hideOffcanvas" style="display: none;" data-bs-dismiss="offcanvas"></div>
+				      </div>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.min.js"></script>
+<script src="https://unpkg.com/vue-resource@1.5.3/dist/vue-resource.min.js"></script>
+<script src="https://www.layuicdn.com/layer/layer.js"></script>
+
+<script src="./calcuator.min.js"></script>
+<script type="text/javascript">
+
+const vm = new Vue({
+	el:'#app',
+	data : {
+		url:'',
+		way : 'TwoFixed',
+		fixed : {
+			deleted : false, selected : false, thousand:'', hundred:'', ten:'', unit:'', five:''
+		},
+		matchFullTurn : {
+			deleted : false, selected : false, value1 : '', value2 : '', value3: '', value4:''
+		},
+		summation : {
+			selected:false,
+			deleted:false,
+			items : [
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''},
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''},
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''},
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''}
+			]
+		},
+		combineSummation : { two:true, three:false, value:'' },
+		fullTurn:'',
+		exclude:'',
+		symbolLocation: { thousand:false, hundred:false, ten:false, unit:false, five:false },
+		digit : { deleted:false, selected:false, contains:'', compound:'' },
+		repeat : { selected : false, deleted : false } ,
+		repeat3 : { selected : false, deleted : false } ,
+		repeat4 : { selected : false, deleted : false } ,
+		repeat22 : { selected : false, deleted : false } ,
+		serial : { selected : false, deleted : false },
+		serial3 : { selected : false, deleted : false },
+		serial4 : { selected : false, deleted : false },
+		opposite : { selected : false, deleted : false, value1 : '', value2 : '', value3 : '' },
+		attr : [
+			{ selected : false, deleted : false, thousand:false, hundred:false, ten:false, unit:false, five:false, name:'单' },
+			{ selected : false, deleted : false, thousand:false, hundred:false, ten:false, unit:false, five:false, name:'双' },
+			{ selected : false, deleted : false, thousand:false, hundred:false, ten:false, unit:false, five:false, name:'大' },
+			{ selected : false, deleted : false, thousand:false, hundred:false, ten:false, unit:false, five:false, name:'小' }
+		],
+		issue : {
+			current:'',
+			last:'',
+			lastResult:'',
+		},
+		date:'',
+		status: '',
+		minute:'',
+		second:'',
+		usable:0,
+		selectedNumbers : [],
+		amount:'',
+	},
+	created : function() {
+		this.usable = parseInt(localStorage.getItem('___usable')) || 0
+		this.credit = parseInt(localStorage.getItem('___credit')) || 0			
+		this.account = localStorage.getItem('___$account')
+		let token = localStorage.getItem('___access-token')
+		if (token) {
+			Vue.http.headers.common['access-token'] = token
+		} else {
+			layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+				location = 'login.html'
+			}})
+			return
+		}
+		
+		this.url = localStorage.getItem('___request-url')
+		this.requestCategory()
+		let _this = this
+		setInterval(function() {
+			if (_this.issue.lastResult) return
+			if (new Date().getSeconds() < 15) return
+			if (!_this.issue.last) return
+			_this.$http.get(_this.url + '/lottery/five_star/result?issue='+_this.issue.last).then(e=>{
+				if(e.status === 200 && e.body.code === 0 && e.body.data) {
+					_this.issue.lastResult = e.body.data
+				}
+			})
+		}, 2000, 1000)
+	},
+	methods : {
+		onmessage : function(e) {
+			let data = JSON.parse(e.data);
+			var arr = data.value.split(',');
+			if (data.event === 'balance_renew') {
+				localStorage.setItem('___usable', arr[0])
+				localStorage.setItem('___credit', arr[2])
+				this.usable = arr[0]
+				this.credit = arr[2]
+			} else {
+				console.log(data)
+			}
+		},
+		betting: function() {
+			if (((this.amount || 0) * 100) > this.usable) {
+				layer.msg('可用余额不足')
+				return
+			}
+			if (this.selectedNumbers.length == 0) {
+				layer.msg('请选择投注号码')
+				return
+			}
+			let amount = parseInt(this.amount) * 100
+			let content = {way:this.way, issue:this.issue.current, amount:amount, numbers:this.selectedNumbers}
+			let _this = this
+			let layerIndex = layer.load()
+			this.$http.post(this.url + '/lottery/five_star/bet', content).then(e=>{
+				layer.close(layerIndex)
+				if (e.body.code === 900 || e.body.code === 901) {
+					layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+						location = 'login.html'
+					}})
+					return
+				} else if (e.body.code !== 0) {
+					layer.msg(e.body.message)
+					return
+				}
+				_this.usable = _this.usable - (amount * _this.selectedNumbers.length)
+				localStorage.setItem('___usable', e.body.data.usable)
+				localStorage.setItem('___credit', e.body.data.credit)
+				sessionStorage.setItem('___beted_'+_this.issue.current, JSON.stringify(e.body.data.orders))
+				layer.msg('投注成功')
+				_this.amount = ''
+				_this.resetSelectedParam()
+				$('#hideOffcanvas').click()
+			}, e => {
+				layer.close(layerIndex)
+				layer.msg("网络错误,错误码:" + e.status)
+			})
+		},
+		getUsable : function() {
+			let _this = this
+			let layerIndex = layer.load()
+			this.$http.get(this.url + '/wallet/usable').then(e=>{
+				layer.close(layerIndex)
+				if (e.body.code === 0) {
+					localStorage.setItem('___usable', e.body.data.usable)
+					localStorage.setItem('___credit', e.body.data.credit)
+					_this.usable = e.body.data.usable
+					_this.credit = e.body.data.credit
+				} else if (e.body.code === 900 || e.body.code === 901) {
+					layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+						location = 'login.html'
+					}})
+				} else {
+					layer.msg(e.body.message)
+				}
+				layer.msg('刷新成功')
+			}, e => {
+				layer.close(layerIndex)
+				layer.msg("网络错误,错误码:" + e.status)
+			})
+		},
+		requestCategory : function() {
+			let weeks = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+			let date = new Date()
+			let month = date.getMonth() + 1
+			let day = date.getDate()
+			this.date = (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day) + weeks[date.getDay()]
+			let _this = this
+			this.$http.get(this.url + '/lottery/five_star/category').then(e => {
+				if (e.status !== 200) {
+					layer.msg(e.statusText)
+				} else {
+					if (e.body.code === 0) {
+						_this.issue.current = e.body.data.currentIssue + ''
+						_this.issue.last = e.body.data.lastIssue + ''
+						_this.issue.lastResult = e.body.data.lastResult
+						let endTime = e.body.data.endTime * 1000
+						let surplus = (endTime - e.body.systemTimestamp) / 1000
+						_this.minute = Math.floor(surplus / 60)
+						_this.second = Math.floor(surplus % 60)
+						let interval = setInterval(function() {
+							_this.second--
+							if (_this.second < 0) {
+								_this.second = 59
+								_this.minute--
+								if (_this.minute <0) {
+									clearInterval(interval)
+									layer.msg('请注意:'+_this.issue.current+'期已经封盘')
+									_this.requestCategory()
+								}
+							}
+						}, 1000)
+					} else if (e.body.code === 900 || e.body.code === 901) {
+						layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+							location = 'login.html'
+						}})
+					} else {
+						layer.msg(e.body.message)
+					}
+				}
+			})
+		},
+		tab : function(way) {
+			this.way = way
+			this.resetSelectedParam()
+		},
+		build : function() {
+			const builder = eval('new '+this.way+'NumberBuilder(this)')
+			try {
+				this.selectedNumbers = builder.build()
+				if (!this.selectedNumbers) this.selectedNumbers = []
+			} catch(e) {
+				this.selectedNumbers = []
+				layer.msg(e.message)
+			}
+		},
+		resetSelectedParam : function() {
+			this.fixed.deleted = false
+			this.fixed.selected = false
+			this.fixed.thousand = ''
+			this.fixed.hundred = ''
+			this.fixed.ten = ''
+			this.fixed.unit = ''
+			this.fixed.five = ''
+
+			this.matchFullTurn.deleted = false
+			this.matchFullTurn.selected = false
+			this.matchFullTurn.value1 = ''
+			this.matchFullTurn.value2 = ''
+
+			this.summation.selected = false
+			this.summation.deleted = false
+			this.summation.items = [
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''},
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''},
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''},
+				{indexs: {thousand:false, hundred:false, ten:false, unit:false, five:false}, value:''}
+			]
+			this.combineSummation.two = true
+			this.combineSummation.three = false
+			this.combineSummation.value = ''
+			this.fullTurn = ''
+			this.exclude = ''
+			this.symbolLocation = { thousand:false, hundred:false, ten:false, unit:false, five:false }
+			this.digit.deleted = false
+			this.digit.selected = false
+			this.digit.contains = ''
+			this.digit.compound = ''
+
+			this.repeat.selected = false
+			this.repeat.deleted = false
+			this.repeat3.selected = false
+			this.repeat3.deleted = false
+			this.repeat4.selected = false
+			this.repeat4.deleted = false
+			this.repeat22.selected = false
+			this.repeat22.deleted = false
+			this.serial.selected = false
+			this.serial.deleted = false
+			this.serial3.selected = false
+			this.serial3.deleted = false
+			this.serial4.selected = false
+			this.serial4.deleted = false
+
+			this.opposite.selected = false
+			this.opposite.deleted = false
+			this.opposite.value1 = ''
+			this.opposite.value2 = ''
+			this.opposite.value3 = ''
+
+			for (let i = 0; i < 4; i++) {
+				this.attr[i].selected = false
+				this.attr[i].deleted = false
+				this.attr[i].thousand = false
+				this.attr[i].hundred = false
+				this.attr[i].ten = false
+				this.attr[i].unit = false
+				this.attr[i].five = false
+			}
+			this.selectedNumbers = []
+		}
+	},
+	watch : {
+		'fixed.deleted' : function(v) {
+			if (!v) return
+			this.fixed.selected = false
+			this.matchFullTurn.deleted = false
+			this.matchFullTurn.selected = false
+		},
+		'fixed.selected' : function(v) {
+			if (!v) return
+			this.fixed.deleted = false
+			this.matchFullTurn.deleted = false
+			this.matchFullTurn.selected = false
+		},
+		'matchFullTurn.deleted' : function(v) {
+			if (!v) return
+			this.matchFullTurn.selected = false
+			this.fixed.deleted = false
+			this.fixed.selected = false
+		},
+		'matchFullTurn.selected' : function(v) { 
+			if (!v) return
+			this.matchFullTurn.deleted = false
+			this.fixed.deleted = false
+			this.fixed.selected = false
+		},
+		'combineSummation.two' : function(v) {
+			if(v) this.combineSummation.three = false
+		},
+		'combineSummation.three' : function(v) {
+			if(v) this.combineSummation.two = false
+		},
+		'summation.selected' : function(v) {
+			if (v) this.summation.deleted = false
+		},
+		'summation.deleted' : function(v) {
+			if (v) this.summation.selected = false
+		},
+		'digit.deleted' : function(v) {
+			if (v) this.digit.selected = false
+		},
+		'digit.selected' : function(v) {
+			if (v) this.digit.deleted = false
+		},
+		'repeat.deleted' : function(v) {
+			if (v) this.repeat.selected = false
+		},
+		'repeat.selected' : function(v) {
+			if (v) this.repeat.deleted = false
+		},
+		'repeat3.deleted' : function(v) {
+			if (v) this.repeat3.selected = false
+		},
+		'repeat3.selected' : function(v) {
+			if (v) this.repeat3.deleted = false
+		},
+		'repeat4.deleted' : function(v) {
+			if (v) this.repeat4.selected = false
+		},
+		'repeat4.selected' : function(v) {
+			if (v) this.repeat4.deleted = false
+		},
+		'repeat22.deleted' : function(v) {
+			if (v) this.repeat22.selected = false
+		},
+		'repeat22.selected' : function(v) {
+			if (v) this.repeat22.deleted = false
+		},
+		'serial.deleted' : function(v) {
+			if (v) this.serial.selected = false
+		},
+		'serial.selected' : function(v) {
+			if (v) this.serial.deleted = false
+		},
+		'serial3.deleted' : function(v) {
+			if (v) this.serial3.selected = false
+		},
+		'serial3.selected' : function(v) {
+			if (v) this.serial3.deleted = false
+		},
+		'serial4.deleted' : function(v) {
+			if (v) this.serial4.selected = false
+		},
+		'serial4.selected' : function(v) {
+			if (v) this.serial4.deleted = false
+		},
+		'opposite.selected' : function(v) {
+			if (v) this.opposite.deleted = false
+		},
+		'opposite.deleted' : function(v) {
+			if (v) this.opposite.selected = false
+		},
+		'attr.0.selected' : function(v) {
+			if (v) this.attr[0].deleted = false
+		},
+		'attr.0.deleted' : function(v) {
+			if (v) this.attr[0].selected = false
+		},
+		'attr.1.selected' : function(v) {
+			if (v) this.attr[1].deleted = false
+		},
+		'attr.1.deleted' : function(v) {
+			if (v) this.attr[1].selected = false
+		},
+		'attr.2.selected' : function(v) {
+			if (v) this.attr[2].deleted = false
+		},
+		'attr.2.deleted' : function(v) {
+			if (v) this.attr[2].selected = false
+		},
+		'attr.3.selected' : function(v) {
+			if (v) this.attr[3].deleted = false
+		},
+		'attr.3.deleted' : function(v) {
+			if (v) this.attr[3].selected = false
+		},
+		"issue.current" : function(issue) {
+			let orders = ''
+			let key = '___beted_' + issue
+			for (let i = 0; i < sessionStorage.length; i++) {
+				let k = sessionStorage.key(i)
+				if (k === key) {
+					orders = sessionStorage.getItem(key)
+				} else if (k.startsWith('___beted_')) {
+					sessionStorage.removeItem(k)
+				}
+			}
+			if (orders) {
+				this.orders = JSON.parse(orders)
+				return
+			}
+			let _this = this
+			this.$http.get(this.url + '/lottery/five_star/order/issue').then(e => {
+				if(e.status === 200 && e.body.code === 0) {
+					for (let i = 0; i < e.body.data.length; i++) {
+						e.body.data[i].selected = false
+					}
+					_this.orders = e.body.data
+				}
+			})
+		}
+	}
+})
+
+$('.list-group-item-action').on('show.bs.tab', function (e) {
+	vm.tab(e.target.dataset.way)
+});
+let sseServer = localStorage.getItem('___sse')
+let _source = new EventSource(sseServer + '@' + new Date().getTime());
+_source.addEventListener('message', e => {vm.onmessage(e);})
+_source.addEventListener('error', e => { _source.close();})
+setInterval(() => {
+	_source.close();
+	_source = new EventSource(sseServer + '@' + new Date().getTime());
+	_source.addEventListener('message', e => {vm.onmessage(e);})
+	_source.addEventListener('error', e => { _source.close();})
+}, 500000)
+</script>

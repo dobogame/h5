@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+	<title>bootstrap</title>
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="jquery.min.js"></script>
+	<!-- 新 Bootstrap5 核心 CSS 文件 -->
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<!-- 引入图标库icon -->
+	<link rel="stylesheet" href="icon/bootstrap-icons.css">
+	<!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+	<script src="bootstrap.bundle.min.js"></script>
+	<!-- css解决a链接按钮式显示蓝框 -->
+	<link rel="stylesheet" href="my.css">
+</head>
+<body>
+	<!-- 自适应导航 -->
+	<main id="app">
+		<!-- 导航 -->
+		<div class="container bg-secondary p-0 mb-3">
+			<div class="d-flex justify-content-between">
+				<a href="home.html" class="link-light p-3 text-decoration-none">幸运五星彩</a>
+				<a href="kuaida.html" class="link-light px-2 py-3 text-decoration-none">快打</a>
+				<a href="kuaixuan.html" class="link-light px-2 py-3 text-decoration-none">快选</a>
+				<a href="mingxi.html" class="link-light shadow px-2 py-3 text-decoration-none">明细</a>
+				<a href="zhangdan.html" class="link-light px-2 py-3 text-decoration-none">账单</a>
+				<a href="#admin" class="link-light p-3 shadow-sm text-decoration-none" data-bs-toggle="offcanvas" aria-controls="admin"><i class="bi bi-person-circle" style="font-size: 1rem;"></i></a>
+			</div>
+		</div>
+		<!-- 个人中心侧边栏 -->
+		<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="admin" aria-labelledby="adminLabel" data-bs-scroll="false" data-bs-backdrop="true">
+		  <div class="offcanvas-header bg-secondary">
+		  	<div id="offcanvasTopLabel">
+		  		<p class="text-light">账户:{{account}}</p>
+		  		<div><small class="text-dark">可用余额:{{(usable / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-dark">账户额度:{{(credit / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-warning">账户余额:{{((usable - credit) / 100).toFixed(2)}}</small></div>	
+		  	</div>
+		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		  </div>
+		  <div class="offcanvas-body">
+		  	<a href="kaijiang.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>开奖号码</span>
+		  	</a>
+		  	<a href="guize.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-clipboard-data-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>规则说明</span>
+		  	</a>	  	
+		  	<a href="peilv.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-back me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>赔率转换</span>
+		  	</a>
+		  	<a href="zhuce.html" class="d-flex align-items-center text-dark text-decoration-none mb-3">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>修改密码</span>
+		  	</a>
+		  	<div class="d-grid">
+		  	    <button type="button" class="btn btn-secondary btn-block">登出</button>
+		  	</div>
+		  </div>
+		</div>
+		<!-- 开奖面板 -->
+		<div class="container px-3 sticky-top">
+			<div class="card text-center">
+				<div class="card-header py-2">
+					<h6 class="card-title m-0 text-secondary">{{issue.last}}期<small class="text-muted"> {{date}}</small>
+					</h6>
+				</div>
+				<div class="card-body py-2">
+					<div v-if="issue.lastResult">
+						<i :class="'bi bi-'+issue.lastResult[0]+'-circle-fill text-secondary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[1]+'-circle-fill text-danger'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[2]+'-circle-fill text-primary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[3]+'-circle-fill text-success'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[4]+'-circle-fill text-warning'" style="font-size:1.6rem;"></i>
+					</div>
+					<div v-else>
+						<div class="spinner-border spinner-border-sm text-primary" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-secondary" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-success" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-danger" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-warning" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<p class="card-text text-danger mb-2">
+						<small>第{{issue.current}}期封盘还有:<mark id="bttime">{{minute}}分{{second < 10 ? '0' + second : second}}秒</mark>
+						</small>
+					</p>
+					<div class="btn-group w-100">
+					  <button @click="refund" :disabled="disrefundable" type="button" class="btn btn-sm btn-danger">退码</button>
+					  <button @click="allRefund" type="button" class="btn btn-sm btn-success">整单退码</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- .............. -->
+		<div class="container px-3 mt-3" style="font-size:0.85rem;">
+			<ul class="list-group">
+			  <li class="list-group-item flex-fill border-bottom-0">
+			  	<div class="row row-cols-4 text-center">
+			  		<div class="col border-end px-0">号码</div>
+			  		<div class="col border-end px-0">金额</div>
+			  		<div class="col border-end px-0">赔率</div>
+			  		<div class="col px-0">状态</div>
+			  	</div>
+			  </li>
+			  <div v-if="orders.length > 0" class="mb-3">
+			  	<li v-for="order in orders"  class="list-group-item flex-fill">
+					<div class="row  row-cols-4 text-center">
+						<div class="col border-end px-0">{{order.num}}</div>
+						<div class="col border-end px-0">{{(order.amount / 100).toFixed(2)}}</div>
+						<div class="col border-end px-0">{{(order.odds / 100).toFixed(2)}}</div>
+						<div class="col px-1">
+							<div class="form-check mb-0 px-0">
+							  <input v-model="order.selected" class="form-check-input ms-0 float-none" type="checkbox" id="check1" name="option1" value="something">
+							  <label class="form-check-label"></label>
+							</div>
+						</div>
+					</div>
+				</li>
+			</div>
+			<li v-else class="list-group-item flex-fill">
+				<div class="progress">
+				  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">暂无数据!</div>
+				</div>
+			</li>
+			</ul>
+		</div>
+		<!-- ...................................... -->
+	</main>
+</body>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.min.js"></script>
+<script src="https://unpkg.com/vue-resource@1.5.3/dist/vue-resource.min.js"></script>
+<script src="https://www.layuicdn.com/layer/layer.js"></script>
+
+<script src="./calcuator.min.js"></script>
+<script type="text/javascript">
+ 
+const vm = new Vue({
+	el:'#app',
+	data : {
+		url:'',
+		issue : {
+			current:'',
+			last:'',
+			lastResult:'',
+		},
+		disrefundable: true,
+		date:'',
+		status: '',
+		minute:'',
+		second:'',
+		usable:0,
+		orders: [],
+		statusText : ['待', '未', '中', '中', '退']
+	},
+	created : function() {
+		this.usable = parseInt(localStorage.getItem('___usable')) || 0	
+		this.credit = parseInt(localStorage.getItem('___credit')) || 0		
+		let token = localStorage.getItem('___access-token')
+		this.account = localStorage.getItem('___$account')
+		this.url = localStorage.getItem('___request-url')
+		if (token) {
+			Vue.http.headers.common['access-token'] = token
+		} else {
+			layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+				location = 'login.html'
+			}})
+			return
+		}
+		let _this = this
+		// this.$http.get(this.url + '/lottery/five_star/order/issue').then(e => {
+		// 	if(e.status === 200 && e.body.code === 0) {
+		// 		for (let i = 0; i < e.body.data.length; i++) {
+		// 			e.body.data[i].selected = false
+		// 		}
+		// 		_this.orders = e.body.data
+		// 	}
+		// })
+		this.requestCategory()
+		
+		setInterval(function() {
+			if (_this.issue.lastResult) return
+			if (new Date().getSeconds() < 15) return
+			if (!_this.issue.last) return
+			_this.$http.get(_this.url + '/lottery/five_star/result?issue='+_this.issue.last).then(e=>{
+				if(e.status === 200 && e.body.code === 0 && e.body.data) {
+					_this.issue.lastResult = e.body.data
+				}
+			})
+		}, 2000, 1000)
+	},
+	methods : {
+		onmessage : function(e) {
+			let data = JSON.parse(e.data);
+			var arr = data.value.split(',');
+			if (data.event === 'balance_renew') {
+				localStorage.setItem('___usable', arr[0])
+				localStorage.setItem('___credit', arr[2])
+				this.usable = arr[0]
+				this.credit = arr[2]
+			} else {
+				console.log(data)
+			}
+		},
+		requestCategory : function() {
+			let weeks = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+			let date = new Date()
+			let month = date.getMonth() + 1
+			let day = date.getDate()
+			this.date = (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day) + weeks[date.getDay()]
+			let _this = this
+			this.$http.get(this.url + '/lottery/five_star/category').then(e => {
+				if (e.status !== 200) {
+					layer.msg(e.statusText)
+				} else {
+					if (e.body.code === 0) {
+						_this.issue.current = e.body.data.currentIssue + ''
+						_this.issue.last = e.body.data.lastIssue + ''
+						_this.issue.lastResult = e.body.data.lastResult
+						let endTime = e.body.data.endTime * 1000
+						let surplus = (endTime - e.body.systemTimestamp) / 1000
+						_this.minute = Math.floor(surplus / 60)
+						_this.second = Math.floor(surplus % 60)
+						let interval = setInterval(function() {
+							_this.second--
+							if (_this.second < 0) {
+								_this.second = 59
+								_this.minute--
+								if (_this.minute <0) {
+									clearInterval(interval)
+									_this.orders = []
+									layer.msg('请注意:'+_this.issue.current+'期已经封盘')
+									_this.requestCategory()
+								}
+							}
+						}, 1000)
+					} else if (e.body.code === 900 || e.body.code === 901) {
+						layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+							location = 'login.html'
+						}})
+					} else {
+						layer.msg(e.body.message)
+					}
+				}
+			})
+		},
+		allRefund : function() {
+			if (this.orders.length == 0) {
+				layer.msg('无效退码选择')
+				return
+			}
+			let _this = this
+			layer.msg('确定退码?', {
+				time: 0,
+				btn:['确定', '取消'],
+				yes : function(index) {
+					layer.close(index)
+					let layerLoadIndex = layer.load()
+					_this.$http.get(_this.url + '/lottery/five_star/refund_all').then(e => {
+						layer.close(layerLoadIndex)
+						if (e.body.code === 900 || e.body.code == 901) {
+							layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+								location = 'login.html'
+							}})
+							return
+						}
+						if (e.body.code != 0) {
+							layer.msg(e.body.message)
+							return
+						}
+						sessionStorage.removeItem('___beted_'+_this.issue.current)
+						_this.orders = []
+						_this.usable = e.body.data
+						localStorage.setItem('___usable', _this.usable)
+						layer.msg('退单成功')
+					},e => {
+						layer.close(layerIndex)
+						layer.msg("网络错误,错误码:" + e.status)
+					})
+				}
+			})
+		},
+		refund : function() {
+			let arr = []
+			for (let i = 0; i < this.orders.length; i++) {
+				if (this.orders[i].selected) arr.push(this.orders[i].id)
+			}
+			if (arr.length == 0) {
+				layer.msg('无效退码选择')
+				return
+			}
+			let _this = this
+			layer.msg('确定退码?', {
+				time: 0,
+				btn:['确定', '取消'],
+				yes : function(index) {
+					layer.close(index)
+					_this.refundRequest(arr)
+				}
+			})
+		},
+		refundRequest : function(arr) {
+			let layerLoadIndex = layer.load()
+			let _this = this
+			this.$http.post(_this.url + '/lottery/five_star/refund', arr).then(e => {
+				layer.close(layerLoadIndex)
+				if (e.body.code === 900 || e.body.code == 901) {
+					layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+						location = 'login.html'
+					}})
+					return
+				}
+				if (e.body.code != 0) {
+					layer.msg(e.body.message)
+					return
+				}
+				let buys = JSON.parse(sessionStorage.getItem('___beted_'+_this.issue.current))
+				let newBuys = []
+				for (let i = 0; i < buys.length; i++) {
+					if (arr.indexOf(buys[i].id) == -1) {
+						newBuys.push(buys[i])
+					}
+				}
+				if (newBuys.length > 0) {
+					sessionStorage.setItem('___beted_'+_this.issue.current, JSON.stringify(newBuys))
+				} else {
+					sessionStorage.removeItem('___beted_'+_this.issue.current)
+				}
+				_this.orders = newBuys
+				_this.usable = e.body.data
+				localStorage.setItem('___usable', _this.usable)
+				layer.msg('退单成功')
+			}, e => {
+				layer.close(layerLoadIndex)
+				layer.msg("网络错误,错误码:" + e.status)
+			})
+		}
+	},
+	watch : {
+		orders : function(e) {
+			for (let i = 0; i < this.orders.length; i++) {
+				if (this.orders[i].selected) {
+					this.disrefundable = false
+					return
+				}
+			}
+		},
+		"issue.current" : function(issue) {
+			let orders = ''
+			let key = '___beted_' + issue
+			for (let i = 0; i < sessionStorage.length; i++) {
+				let k = sessionStorage.key(i)
+				if (k === key) {
+					orders = sessionStorage.getItem(key)
+				} else if (k.startsWith('___beted_')) {
+					sessionStorage.removeItem(k)
+				}
+			}
+			if (orders) {
+				this.orders = JSON.parse(orders)
+				return
+			}
+			let _this = this
+			this.$http.get(this.url + '/lottery/five_star/order/issue').then(e => {
+				if(e.status === 200 && e.body.code === 0) {
+					for (let i = 0; i < e.body.data.length; i++) {
+						e.body.data[i].selected = false
+					}
+					_this.orders = e.body.data
+				}
+			})
+		}
+	}
+})
+let sseServer = localStorage.getItem('___sse')
+	let _source = new EventSource(sseServer + '@' + new Date().getTime());
+	_source.addEventListener('message', e => {vm.onmessage(e);})
+	_source.addEventListener('error', e => { _source.close();})
+	setInterval(() => {
+		_source.close();
+		_source = new EventSource(sseServer + '@' + new Date().getTime());
+		_source.addEventListener('message', e => {vm.onmessage(e);})
+		_source.addEventListener('error', e => { _source.close();})
+	}, 500000)
+</script>
+</html>

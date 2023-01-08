@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+	<title>bootstrap</title>
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="jquery.min.js"></script>
+	<!-- 新 Bootstrap5 核心 CSS 文件 -->
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<!-- 引入图标库icon -->
+	<link rel="stylesheet" href="icon/bootstrap-icons.css">
+	<!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+	<script src="bootstrap.bundle.min.js"></script>
+	<!-- css解决a链接按钮式显示蓝框 -->
+	<link rel="stylesheet" href="my.css">
+</head>
+<body>
+	<!-- 自适应导航 -->
+	<main>
+		<!-- 导航 -->
+		<div class="container bg-secondary p-0 sticky-top">
+			<div class="d-flex justify-content-between">
+				<a href="home.html" class="link-light shadow p-3 text-decoration-none">幸运五星彩</a>
+				<a href="kuaida.html" class="link-light px-2 py-3 text-decoration-none">快打</a>
+				<a href="kuaixuan.html" class="link-light px-2 py-3 text-decoration-none">快选</a>
+				<a href="mingxi.html" class="link-light px-2 py-3 text-decoration-none">明细</a>
+				<a href="zhangdan.html" class="link-light px-2 py-3 text-decoration-none">账单</a>
+				<a href="#admin" class="link-light p-3 shadow-sm text-decoration-none" data-bs-toggle="offcanvas" aria-controls="admin"><i class="bi bi-person-circle" style="font-size: 1rem;"></i></a>
+			</div>
+		</div>
+		<!-- 个人中心侧边栏 -->
+		<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="admin" aria-labelledby="adminLabel" data-bs-scroll="false" data-bs-backdrop="true">
+		  <div class="offcanvas-header bg-secondary">
+		  	<div id="offcanvasTopLabel">
+		  		<p class="text-light">账户:{{account}}</p>
+		  		<div><small class="text-dark">可用余额:{{(usable / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-dark">账户额度:{{(credit / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-warning">账户余额:{{((usable - credit) / 100).toFixed(2)}}</small></div>	
+		  	</div>
+		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		  </div>
+		  <div class="offcanvas-body">
+		  	<a href="kaijiang.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>开奖号码</span>
+		  	</a>
+		  	<a href="guize.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-clipboard-data-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>规则说明</span>
+		  	</a>	  	
+		  	<a href="peilv.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-back me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>赔率转换</span>
+		  	</a>
+		  	<a href="zhuce.html" class="d-flex align-items-center text-dark text-decoration-none mb-3">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>修改密码</span>
+		  	</a>
+		  	<div class="d-grid">
+		  	    <button type="button" class="btn btn-secondary btn-block">登出</button>
+		  	</div>
+		  </div>
+		</div>
+		<!-- 快打 -->
+		<div class="container px-3 my-5 text-center">
+			<p class="h6 text-center mb-3 fw-bold">本站销售<strong class="text-danger">幸运五星彩</strong>电脑体育彩票游戏规则</p>
+			<p class="fw-bold">第一章 总则</p>
+			<p>1.根据财政部《彩票发行与销售管理暂行规定》和《计算机销售体育彩票管理暂行办法》,制定本游戏规则</p>
+			<p>2.本彩票站实行自愿购买,量力而行;凡下注者即被视为同意并遵守本规则。</p>
+			<p class="fw-bold">第二章 游戏方法</p>
+			<p>1.“五位数”的每注彩票由00000-99999的任意5位自然数排列而成。<code>本站取前面5位做为游戏规则!</code></p>
+			<p class="text-danger fw-bold">假设下列为开奖结果:</p>
+			<ul class="list-group list-group-horizontal mb-3 text-center justify-content-center">
+			  <li class="list-group-item">
+			  	<div class="border-bottom">仟</div>
+			  	<div>1</div>
+			  </li>
+			  <li class="list-group-item">
+			  	<div class="border-bottom">佰</div>
+			  	<div>2</div>
+			  </li>
+			  <li class="list-group-item">
+			  	<div class="border-bottom">拾</div>
+			  	<div>3</div>
+			  </li>
+			  <li class="list-group-item">
+			  	<div class="border-bottom">个</div>
+			  	<div>4</div>
+			  </li>
+			  <li class="list-group-item">
+			  	<div class="border-bottom">球5</div>
+			  	<div>5</div>
+			  </li>
+			</ul>
+			<p>依照开奖结果,中奖范例如下:</p>
+			<p>一字定中奖:</p>
+			<p class="text-danger">1xxxx; x2xxx; xx3xx; xxx4x; xxxx5</p>
+			<p>二字定中奖:</p>
+			<p class="text-danger">12xx; 1x3x; 1xx4; x23x; x2x4; xx34</p>
+			<p>五位二字定中奖:</p>
+			<p class="text-danger">1xxx5; x2xx5; xx3x5; xxx45</p>
+			<p>三字定中奖:</p>
+			<p class="text-danger">123x; 12x4; 1x34; x234</p>
+			<p>四字定中奖:</p>
+			<p class="text-danger">1234</p>
+			<p>二字现中奖:</p>
+			<p class="text-danger">12; 13; 14; 23; 24; 34</p>
+			<p>三字现中奖:</p>
+			<p class="text-danger">123; 124; 134; 234</p>
+			<p>四字现中奖:</p>
+			<p class="text-danger">1234 现</p>
+			<p class="fw-bold">第三章 关于退码</p>
+			<p>1.每一期,每个用户退码不能超过2万个码。</p>
+			<p class="fw-bold">第四章 开奖及公告</p>
+			<p>1.每5分钟一期,全天228期。</p>
+			<p>2.每期开奖后,以国家体育总局体育彩票管理中心公布的开奖号码为准。</p>
+			<p class="fw-bold">第五章 附则</p>
+			<p>本游戏规则的最终解释权归本公司。</p>
+		</div>	
+	</main>
+</body>
+</html>

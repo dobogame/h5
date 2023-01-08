@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+	<title>bootstrap</title>
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="jquery.min.js"></script>
+	<!-- 新 Bootstrap5 核心 CSS 文件 -->
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<!-- 引入图标库icon -->
+	<link rel="stylesheet" href="icon/bootstrap-icons.css">
+	<!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+	<script src="bootstrap.bundle.min.js"></script>
+	<!-- css解决a链接按钮式显示蓝框 -->
+	<link rel="stylesheet" href="my.css">
+	<!-- jquery -->
+</head>
+<body>
+	<!-- 自适应导航 -->
+	<main id="app">
+		<!-- 导航 -->
+		<div class="container bg-secondary p-0 sticky-top">
+			<div class="d-flex justify-content-between">
+				<a href="home.html" class="link-light p-3 shadow text-decoration-none">幸运五星彩</a>
+				<a href="kuaida.html" class="link-light px-2 py-3 text-decoration-none">快打</a>
+				<a href="kuaixuan.html" class="link-light px-2 py-3 text-decoration-none">快选</a>
+				<a href="mingxi.html" class="link-light px-2 py-3 text-decoration-none">明细</a>
+				<a href="zhangdan.html" class="link-light px-2 py-3 text-decoration-none">账单</a>
+				<a href="#admin" class="link-light p-3 shadow-sm text-decoration-none" data-bs-toggle="offcanvas" aria-controls="admin"><i class="bi bi-person-circle" style="font-size: 1rem;"></i></a>
+			</div>
+		</div>
+		<!-- 个人中心侧边栏 -->
+		<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="admin" aria-labelledby="adminLabel" data-bs-scroll="false" data-bs-backdrop="true">
+		  <div class="offcanvas-header bg-secondary">
+		  	<div id="offcanvasTopLabel">
+		  		<p class="text-light">账户:{{account}}</p>
+		  		<div><small class="text-dark">可用余额:{{(usable / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-dark">账户额度:{{(credit / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-warning">账户余额:{{((usable - credit) / 100).toFixed(2)}}</small></div>	
+		  	</div>
+		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		  </div>
+		  <div class="offcanvas-body">
+		  	<a href="kaijiang.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>开奖号码</span>
+		  	</a>
+		  	<a href="guize.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-clipboard-data-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>规则说明</span>
+		  	</a>	  	
+		  	<a href="peilv.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-back me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>赔率转换</span>
+		  	</a>
+		  	<a href="zhuce.html" class="d-flex align-items-center text-dark text-decoration-none mb-3">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>修改密码</span>
+		  	</a>
+		  	<div class="d-grid">
+		  	    <button type="button" class="btn btn-secondary btn-block">登出</button>
+		  	</div>
+		  </div>
+		</div>
+		<!-- 开奖列表 -->
+		<div class="container px-4 my-3">
+			<div class="mb-3 pb-3 border-bottom" v-for="result in results">
+				<div class="d-flex flex-column" >
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<span class="d-inline-block me-2" style="font-size:0.825rem;">{{result.issue}}期</span>
+						<span class="d-inline-block text-muted" style="font-size:0.825rem;">{{result.time}}</span>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<div class="d-flex">
+							<div class="text-center me-2">
+								<span class="d-block bg-secondary rounded-circle text-light" style="width:1.5rem;height:1.5rem;line-height: 1.5rem;font-size:0.825rem;">{{result.result[0]}}</span>
+								<span class="d-block text-muted" style="font-size:0.825rem;">仟</span>
+							</div>
+							<div class="text-center me-2">
+								<span class="d-block bg-primary rounded-circle text-light" style="width:1.5rem;height:1.5rem;line-height: 1.5rem;font-size:0.825rem;">{{result.result[1]}}</span>
+								<span class="d-block text-muted" style="font-size:0.825rem;">佰</span>
+							</div>
+							<div class="text-center me-2">
+								<span class="d-block bg-danger rounded-circle text-light" style="width:1.5rem;height:1.5rem;line-height: 1.5rem;font-size:0.825rem;">{{result.result[2]}}</span>
+								<span class="d-block text-muted" style="font-size:0.825rem;">拾</span>
+							</div>
+							<div class="text-center me-2">
+								<span class="d-block bg-warning rounded-circle text-light" style="width:1.5rem;height:1.5rem;line-height: 1.5rem;font-size:0.825rem;">{{result.result[3]}}</span>
+								<span class="d-block text-muted" style="font-size:0.825rem;">个</span>
+							</div>
+							<div class="text-center me-2">
+								<span class="d-block" style="width:1.5rem;height:1.5rem;line-height: 1.5rem;font-size:0.825rem;">+</span>
+								<span class="d-block text-muted" style="font-size:0.825rem;">+</span>
+							</div>
+							<div class="text-center">
+								<span class="d-block bg-success rounded-circle text-light" style="width:1.5rem;height:1.5rem;line-height: 1.5rem;font-size:0.825rem;">{{result.result[4]}}</span>
+								<span class="d-block text-muted" style="font-size:0.825rem;">球5</span>
+							</div>
+						</div>
+						<div class="d-flex">
+							<div class="text-center">
+								<span class="d-block text-muted me-2">单</span>
+							</div>
+							<div class="text-center">
+								<span class="d-block text-muted">大</span>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- ................................. -->
+		<div v-if="!end" class="d-grid mb-3 mx-3">
+			<button @click="requestMore" class="btn btn-secondary btn-block">加载更多</button>
+		</div>
+		<div v-else class="mb-3 text-center">到底了!</div>
+	</main>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.min.js"></script>
+<script src="https://unpkg.com/vue-resource@1.5.3/dist/vue-resource.min.js"></script>
+<script src="https://www.layuicdn.com/layer/layer.js"></script>
+
+<script>
+	const vm = new Vue({
+		el : '#app',
+		data : {
+			usable:0,
+			credit:0,
+			account:'',
+			offset: 0,
+			count : 15,
+			end : false,
+			results : []
+		},
+		created : function () {
+			this.usable = parseInt(localStorage.getItem('___usable')) || 0	
+			this.credit = parseInt(localStorage.getItem('___credit')) || 0	
+			this.account = localStorage.getItem('___$account')
+			let token = localStorage.getItem('___access-token')
+			if (token) {
+				Vue.http.headers.common['access-token'] = token
+			} else {
+				layer.msg('已登出，请重新登录', {time:0, 'btn':['去登陆', '取消'], yes: (index) => {
+					location = 'login.html'
+				}})
+				return
+			}
+			this.url = localStorage.getItem('___request-url')
+			this.requestResults()
+		}, 
+		methods : {
+			requestMore : function() {
+				this.offset += this.count
+				this.requestResults()
+			},
+			requestResults : function() {
+				let _this = this
+				this.$http.get(this.url + '/lottery/five_star/results?offset='+this.offset+'&count=' + this.count).then(e => {
+					if (e.body.code !== 0) {
+						layer.msg(e.body.messages)
+						return
+					}
+					e.body.data.forEach(result => {
+						_this.results.push(result)
+					});
+				})
+			}
+		}
+	})
+</script>
+</html>

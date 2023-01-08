@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+	<title>bootstrap</title>
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="jquery.min.js"></script>
+	<!-- 新 Bootstrap5 核心 CSS 文件 -->
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<!-- 引入图标库icon -->
+	<link rel="stylesheet" href="icon/bootstrap-icons.css">
+	<!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+	<script src="bootstrap.bundle.min.js"></script>
+	<!-- css解决a链接按钮式显示蓝框 -->
+	<link rel="stylesheet" href="my.css">
+	<!-- jquery -->
+	<script>
+	  $(function () {
+	    TimeDown("bttime", 300000)
+	  });
+	  /*
+	   时间倒计时
+	   TimeDown.js
+	   */
+	  function TimeDown(id, value) {
+	  
+	    //倒计时的总秒数
+	    var totalSeconds = parseInt(value / 1000);
+	  
+	    //取模（余数）
+	    var modulo = totalSeconds % (60 * 60 * 24);
+	    //小时数
+	    var hours = Math.floor(modulo / (60 * 60));
+	    modulo = modulo % (60 * 60);
+	    //分钟
+	    var minutes = Math.floor(modulo / 60);
+	    //秒
+	    var seconds = modulo % 60;
+	  
+	    hours = hours.toString().length == 1 ? '0' + hours : hours;
+	    minutes = minutes.toString().length == 1 ? '0' + minutes : minutes;
+	    seconds = seconds.toString().length == 1 ? '0' + seconds : seconds;
+	  
+	    //输出到页面
+	    document.getElementById(id).innerHTML = minutes + "分" + seconds + "秒";
+	    //延迟一秒执行自己
+	    if(minutes == "00" && parseInt(seconds)-1<0){
+	  
+	    }else{
+	      setTimeout(function () {
+	        TimeDown(id, value-1000);
+	      }, 1000)
+	    }
+	  
+	  }
+	</script>
+</head>
+<body>
+	<!-- 自适应导航 -->
+	<main>
+		<!-- 导航 -->
+		<div class="container bg-secondary p-0 sticky-top">
+			<div class="d-flex justify-content-between">
+				<a href="home.html" class="link-light shadow p-3 text-decoration-none">幸运五星彩</a>
+				<a href="kuaida.html" class="link-light px-2 py-3 text-decoration-none">快打</a>
+				<a href="kuaixuan.html" class="link-light px-2 py-3 text-decoration-none">快选</a>
+				<a href="mingxi.html" class="link-light px-2 py-3 text-decoration-none">明细</a>
+				<a href="zhangdan.html" class="link-light px-2 py-3 text-decoration-none">账单</a>
+				<a href="#admin" class="link-light p-3 shadow-sm text-decoration-none" data-bs-toggle="offcanvas" aria-controls="admin"><i class="bi bi-person-circle" style="font-size: 1rem;"></i></a>
+			</div>
+		</div>
+		<!-- 个人中心侧边栏 -->
+		<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="admin" aria-labelledby="adminLabel" data-bs-scroll="false" data-bs-backdrop="true">
+		  <div class="offcanvas-header bg-secondary">
+		  	<div id="offcanvasTopLabel">
+		  		<p class="text-light">账户:{{account}}</p>
+		  		<div><small class="text-dark">可用余额:{{(usable / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-dark">账户额度:{{(credit / 100).toFixed(2)}}</small></div>
+		  		<div><small class="text-warning">账户余额:{{((usable - credit) / 100).toFixed(2)}}</small></div>	
+		  	</div>
+		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		  </div>
+		  <div class="offcanvas-body">
+		  	<a href="kaijiang.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>开奖号码</span>
+		  	</a>
+		  	<a href="guize.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-clipboard-data-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>规则说明</span>
+		  	</a>	  	
+		  	<a href="peilv.html" class="d-flex align-items-center text-dark text-decoration-none">
+		  		<span><i class="bi bi-back me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>赔率转换</span>
+		  	</a>
+		  	<a href="zhuce.html" class="d-flex align-items-center text-dark text-decoration-none mb-3">
+		  		<span><i class="bi bi-cc-square-fill me-2 text-secondary" style="font-size:2rem;"></i></span>
+		  		<span>修改密码</span>
+		  	</a>
+		  	<div class="d-grid">
+		  	    <button type="button" class="btn btn-secondary btn-block">登出</button>
+		  	</div>
+		  </div>
+		</div>
+		<!-- 开奖面板 -->
+		<div class="container px-3 pt-3">
+			<div class="card text-center">
+				<div class="card-header py-2">
+					<h6 class="card-title m-0 text-secondary">{{issue.last}}期<small class="text-muted"> {{date}}</small>
+					</h6>
+				</div>
+				<div class="card-body py-2">
+					<div v-if="issue.lastResult">
+						<i :class="'bi bi-'+issue.lastResult[0]+'-circle-fill text-secondary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[1]+'-circle-fill text-danger'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[2]+'-circle-fill text-primary'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[3]+'-circle-fill text-success'" style="font-size: 1.6rem;"></i>
+						<i :class="'bi bi-'+issue.lastResult[4]+'-circle-fill text-warning'" style="font-size:1.6rem;"></i>
+					</div>
+					<div v-else>
+						<div class="spinner-border spinner-border-sm text-primary" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-secondary" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-success" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-danger" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+						<div class="spinner-border spinner-border-sm text-warning" role="status">
+						  <span class="visually-hidden">开奖中...</span>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<p class="card-text text-danger">
+						<small>距离{{issue.current}}期封盘还有:<mark id="bttime">{{minute}}分{{second < 10 ? '0' + second : second}}秒</mark>
+						</small>
+					</p>
+				</div>
+			</div>
+		</div>
+		<!-- 隔断 -->
+		<div class="container position-relative my-4">
+			<div class="progress" style="height: 1px;"></div>
+			<p class="bg-white px-2 text-secondary fw-bold m-0 position-absolute top-0 start-50 translate-middle zindex-999"><small>即将上线</small></p>
+		</div>
+		<!-- 今日赛事 -->
+		<div class="container px-3 mb-3">
+			<div class="row row-cols-3">
+			  <div class="col mb-3">
+			    <div class="card h-100">
+			      <div class="card-body bg-light text-center">
+			      		<a href="#" class="card-link stretched-link">			      		
+			      			<img decoding="async" class="img-fluid" src="a6.png" alt="Chania">
+			      		</a>
+			      </div>
+			      <div class="card-footer bg-white text-center">
+			      	<p class="card-title m-0"><small>澳门六合</small></p>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col mb-3">
+			    <div class="card h-100">
+			      <div class="card-body bg-light text-center">
+			      		<a href="6he/touzhu.html" class="card-link stretched-link">
+			      			<img decoding="async" class="img-fluid" src="6he.png" alt="Chania">
+			      		</a>
+			      </div>
+			      <div class="card-footer bg-white text-center">
+			      	<p class="card-title m-0"><small>香港六合</small></p>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col mb-3">
+			    <div class="card h-100">
+			      <div class="card-body bg-light text-center">
+			      		<a href="#" class="card-link stretched-link">
+			      			<img decoding="async" class="img-fluid" src="7x.png" alt="Chania">
+			      		</a>
+			      </div>
+			      <div class="card-footer bg-white text-center">
+			      	<p class="card-title m-0"><small>7星</small></p>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col mb-3">
+			    <div class="card h-100">
+			      <div class="card-body bg-light text-center">
+			      		<a href="#" class="card-link stretched-link">
+			      			<img decoding="async" class="img-fluid" src="p5.png" alt="Chania">
+			      		</a>
+			      </div>
+			      <div class="card-footer bg-white text-center">
+			      	<p class="card-title m-0"><small>排列5</small></p>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col mb-3">
+			    <div class="card h-100">
+			      <div class="card-body bg-light text-center">
+			      		<a href="#" class="card-link stretched-link">
+			      			<img decoding="async" class="img-fluid" src="p3.png" alt="Chania">
+			      		</a>
+			      </div>
+			      <div class="card-footer bg-white text-center">
+			      	<p class="card-title m-0"><small>排列3</small></p>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="col mb-3">
+			    <div class="card h-100">
+			      <div class="card-body bg-light text-center">
+			      		<a href="#" class="card-link stretched-link">
+			      			<img decoding="async" class="img-fluid" src="3d.png" alt="Chania">
+			      		</a>
+			      </div>
+			      <div class="card-footer bg-white text-center">
+			      	<p class="card-title m-0"><small>3D</small></p>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</div>
+	</main>
+</body>
+
+<script>
+	let source = new EventSource("https://sz4ll7enyj.execute-api.ap-northeast-1.amazonaws.com/v1/sse?token=123456789")
+	source.addEventListener('open', e => {
+		console.log(e)
+	})
+	source.addEventListener('message', e => {
+		console.log(e)
+	})
+	source.addEventListener('error', e => {
+		console.log(e)
+	})
+</script>
+
+</html>

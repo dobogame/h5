@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+	<title>bootstrap</title>
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="jquery.min.js"></script>
+	<!-- 新 Bootstrap5 核心 CSS 文件 -->
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<!-- 引入图标库icon -->
+	<link rel="stylesheet" href="icon/bootstrap-icons.css">
+	<!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+	<script src="bootstrap.bundle.min.js"></script>
+	<!-- css解决a链接按钮式显示蓝框 -->
+	<link rel="stylesheet" href="my.css">
+</head>
+<body class="bg-light" >
+	<header class="border-bottom bg-secondary">
+	  <div class="container p-0">
+	  	<ul class="nav justify-content-center py-3">
+	  	    <li class="nav-item">
+	  	      <a class="nav-link text-body" href="#">简体版</a>
+	  	    </li>
+	  	    <li class="nav-item">
+	  	      <a class="nav-link text-light" href="#">繁軆版</a>
+	  	    </li>
+	  	    <li class="nav-item">
+	  	      <a class="nav-link text-light" href="#">ENGLISH</a>
+	  	    </li>
+	  	</ul>
+	  </div>
+	</header>
+	<div class="container px-3" id="app">
+		<div class="bg-white p-3 mt-3">
+			<div class="form-floating mb-3">
+			  <input v-model="account" type="email" class="form-control" id="floatingInput" placeholder="登入账号">
+			  <label for="floatingInput">登入账号</label>
+			</div>
+			<div class="form-floating">
+			  <input v-model="password" type="password" class="form-control" id="floatingPassword" placeholder="密码">
+			  <label for="floatingPassword">密码</label>
+			</div>
+			<div class="d-grid mt-3">
+			    <button type="button" @click="login" class="btn btn-secondary btn-block py-3">登入</button>
+			</div>
+			<div class="d-flex justify-content-between mt-3">
+				<div class="py-2">
+					<div class="form-check">
+					  <input v-model="remember" class="form-check-input" type="checkbox" id="check1" name="option1" value="something">
+					  <label class="form-check-label" for="radio1">记住我的账号</label>
+					</div>
+				</div>
+				<!-- <div class="py-2"><a href="home.html">忘记密码?</a></div>
+				<div class="py-2"><a href="zhuce.html">注册</a></div> -->
+			</div>
+		</div>
+	</div>
+	<div class="container px-3 mt-3 bg-light">
+		<img decoding="async" class="img-fluid" src="img_ip_cn.png" alt="Chania" style="width:100%;">
+	</div>
+</body>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.min.js"></script>
+<script src="https://unpkg.com/vue-resource@1.5.3/dist/vue-resource.min.js"></script>
+
+<script src="https://www.layuicdn.com/layer/layer.js"></script>
+<script>
+	const vm = new Vue({
+		el:'#app',
+		data : {
+			url:'https://g.dgyl.xyz',
+			account:'',
+			password:'',
+			remember:false
+		},
+		created: function() {
+			let account = localStorage.getItem('___account')
+			if (account) {
+				this.account = account
+			}
+		},
+		methods : {
+			login : function() {
+				if (!this.account || this.account.length < 6) {
+					layer.msg('账号最少需要6位数')
+					return
+				} 
+				if (!this.password || this.password.length < 6) {
+					layer.msg('密码错误')
+					return
+				}
+				const layerLoadIndex = layer.load();
+				let _this = this
+				this.$http.post(this.url + '/passport/login', {account:this.account, password:this.password}, {'Content-Type':'application/json'}).then(e => {
+					layer.close(layerLoadIndex)
+					if (e.body.code === 0) {
+						if (_this.remember) {
+							localStorage.setItem('___account', _this.account)
+						}
+						localStorage.setItem('___$account', _this.account)
+						localStorage.setItem('___access-token', e.body.data.token)
+						localStorage.setItem('___sse', e.body.data.sse)
+						localStorage.setItem('___usable', e.body.data.wallet.usable)
+						localStorage.setItem('___credit', e.body.data.wallet.credit)
+						localStorage.setItem('___request-url', e.body.requestUrl || _this.url)
+						location = 'kuaixuan.html'
+					} else {
+						layer.msg(e.body.message)
+					}
+				}, e => {
+					layer.close(layerIndex)
+					layer.msg(e.statusText)
+				})
+			}
+		}
+	})
+</script>
+
+</html>
